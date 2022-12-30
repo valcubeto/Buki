@@ -1,21 +1,27 @@
 module.exports = {
 	name: 'help',
-	command: ({ message, commandList, configuration, args: [commandName], Embed }) => {
-		const embed = new Embed()
+	description: 'Sends help about a command or the list of commands if no arguments provided',
+	args: '[command]',
+	command: ({ message, commandList, configuration: { guild }, args: [commandName], prefix, Embed, utility: { join } }) => {
+		if (!commandName) {
+			//
+		} else {			
+			if (!commandList.has(commandName)) {
+				message.channel.send(`Unknown command: _${commandName}_`)
+				return
+			}
 
-		embed.setColor(0x5050FF)
+			const { name, args } = commandList.get(commandName)
 
-		embed.setAuthor({
-			name: message.inGuild ? message.member.displayName : message.author.name,
-			iconURL: message.author.displayAvatarURL()
-		})
-
-		embed.setTitle(commandName)
-
-		if (commandName in aliases) {
-			embed.setDescription(`_Alias for ${commandList.get(commandName).name}_`)
+			options.title = join(
+				prefix,
+				commandName,
+				args,
+				guild.aliases && commandName in guild.aliases && ` (alias for ${name})`
+			)
 		}
 
+		const embed = new Embed(options)
 		message.channel.send({ embeds: [embed] })
 	}
 }

@@ -1,8 +1,8 @@
-const { Client, IntentsBitField: { Flags }, Embed } = require('discord.js')
+const { Client, IntentsBitField: { Flags }, EmbedBuilder } = require('discord.js')
 
 const client = new Client({
 	intents: [
-		Flags.MessageContent, // bro esto es ridículo
+		Flags.MessageContent,
 		Flags.Guilds,
 		Flags.GuildMessages,
 		Flags.DirectMessages,
@@ -10,12 +10,17 @@ const client = new Client({
 	partials: ['CHANNEL']
 })
 
-const { readdirSync: readDir } = require('node:fs')
+const { readdirSync: readDir, writeFileSync } = require('node:fs')
 
+// will look like { ping: { name: 'ping', command: (...) => ... } }
 const globalCommandList = {}
 
 for (const fileName of readDir('./commands')) {
 	const command = require(`./commands/${fileName}`)
+
+	// Prevent 'undefined'
+	if (!command.name) continue
+
 	globalCommandList[command.name] = command
 }
 
@@ -31,7 +36,7 @@ client.on('messageCreate', message => {
 	const prefix = configuration.guild.prefix ?? '.'
 
 	// Ignore messages that doesn't starts with the guild's prefix or the messages that starts with it but there is no command (e.g. '!')
-	const prefixAtStart = new RegExp(`^${escapeRegExp(prefix)}\\s*(?=[^\\s])`, 'i')
+	const prefixAtStart = new RegExp(`^${utility.escapeRegExp(prefix)}\\s*(?=[^\\s])`, 'i')
 	if (!prefixAtStart.test(message.content)) return
 
 	// Split the message by words
@@ -44,34 +49,48 @@ client.on('messageCreate', message => {
 
 	// Handle unknown commands
 	if (!commandList.has(usedCommand)) {
-		message.channel.send(`'${usedCommand}' is not a command!`)
+		message.channel.send(`Unknown command: ${usedCommand}`)
 		return
 	}
 
-	console.log({ prefix, usedCommand, args })
 	// Execute the command
 	commandList.execute(usedCommand, {
 		message,
 		prefix,
+		usedCommand,
+		args,
 		client,
 		configuration,
 		commandList,
-		Embed
+		Embed,
+		utility,
+		saveFile
 	})
 })
 
-const guildConfigurations = require('./data/guild-configs.json')
-const userConfigurations  = require('./data/user-configs.json' )
+const utility = require('./utility.js')
+
+const GUILD_CONFIGS_PATH = './data/guild-configs.json'
+const USER_CONFIGS_PATH = './data/user-configs.json'
+
+const guildConfigurations = require(GUILD_CONFIGS_PATH)
+const userConfigurations  = require(USER_CONFIGS_PATH)
+
+function saveFile(path, data) {
+	writeFileSync(path, JSON.stringify(data, null, 2))
+}
 
 class Configuration {
 	constructor(message) {
 		this.guild = guildConfigurations[message.guild.id] ?? {}
 		this.user = userConfigurations[message.guild.id] ?? {}
 	}
-}
-
-function escapeRegExp(string) {
-	return string.replace(/[\[\](){}?*+.^$|\\]/g, '\\$&')
+	guildConfigurationsPath() {
+		return GUILD_CONFIGS_PATH
+	}
+	userConfigurationsPath() {
+		return USER_CONFIGS_PATH
+	}
 }
 
 class CommandList {
@@ -81,9 +100,28 @@ class CommandList {
 	has(command) {
 		return command in this.aliases || command in globalCommandList
 	}
+	get(command) {
+		return globalCommandList[this.aliases[command] ?? command]
+	}
 	execute(commandName, data) {
-		const { command } = globalCommandList[this.aliases[commandName] ?? commandName]
+		const { command } = this.get(commandName)
 		command(data)
+	}
+}
+
+class Embed extends EmbedBuilder {
+	constructor(options) {
+		super({
+			color: 0x5050FF,
+			...options,
+			author: {
+				name: `${options.message.inGuild ? options.message.member.displayName : options.message.author.name}`,
+				icon_url: options.message.author.displayAvatarURL()
+			}
+		})
+	}
+	setDescription(...lines) {
+		EmbedBuilder.prototype.setDescription.call(this, lines.join('\n'))
 	}
 }
 
