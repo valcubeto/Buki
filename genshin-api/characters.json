@@ -10,9 +10,9 @@
 			"UI_Talent_S_Ayaka_04"
 		],
 		"skillOrder": [
-			10024,
-			10018,
-			10019
+			"10024",
+			"10018",
+			"10019"
 		],
 		"skills": {
 			"10018": "Skill_S_Ayaka_01",
@@ -20,11 +20,12 @@
 			"10024": "Skill_A_01"
 		},
 		"proudMap": {
-			"10018": 232,
-			"10019": 239,
-			"10024": 231
+			"10018": "232",
+			"10019": "239",
+			"10024": "231"
 		},
-		"nameTextHashMap": 1006042610,
+		"nameTextHashMap": "1006042610",
+		"iconName": "UI_AvatarIcon_Ayaka",
 		"sideIconName": "UI_AvatarIcon_side_Ayaka",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -39,9 +40,9 @@
 			"UI_Talent_S_Qin_04"
 		],
 		"skillOrder": [
-			10031,
-			10033,
-			10034
+			"10031",
+			"10033",
+			"10034"
 		],
 		"skills": {
 			"10031": "Skill_A_01",
@@ -49,11 +50,12 @@
 			"10034": "Skill_E_Qin_01"
 		},
 		"proudMap": {
-			"10031": 331,
-			"10033": 332,
-			"10034": 339
+			"10031": "331",
+			"10033": "332",
+			"10034": "339"
 		},
-		"nameTextHashMap": 3221566250,
+		"nameTextHashMap": "3221566250",
+		"iconName": "UI_AvatarIcon_Qin",
 		"sideIconName": "UI_AvatarIcon_side_Qin",
 		"qualityType": "QUALITY_ORANGE",
 		"costumes": {
@@ -61,13 +63,13 @@
 				"sideIconName": "UI_AvatarIcon_side_QinCostumeSea",
 				"icon": "UI_AvatarIcon_QinCostumeSea",
 				"art": "UI_Costume_QinCostumeSea",
-				"avatarId": 10000003
+				"avatarId": "10000003"
 			},
 			"200302": {
 				"sideIconName": "UI_AvatarIcon_side_QinCostumeWic",
 				"icon": "UI_AvatarIcon_QinCostumeWic",
 				"art": "UI_Costume_QinCostumeWic",
-				"avatarId": 10000003
+				"avatarId": "10000003"
 			}
 		}
 	},
@@ -82,21 +84,22 @@
 			"UI_Talent_S_PlayerWind_04"
 		],
 		"skillOrder": [
-			100543,
-			10067,
-			10068
+			"100543",
+			"10067",
+			"10068"
 		],
 		"skills": {
 			"10067": "Skill_S_PlayerWind_01",
 			"10068": "Skill_E_PlayerWind_01",
 			"100543": "Skill_A_01"
 		},
-		"nameTextHashMap": 1533656818,
+		"nameTextHashMap": "1533656818",
 		"proudMap": {
-			"10067": 732,
-			"10068": 739,
-			"100543": 730
+			"10067": "732",
+			"10068": "739",
+			"100543": "730"
 		},
+		"iconName": "UI_AvatarIcon_PlayerBoy",
 		"sideIconName": "UI_AvatarIcon_side_PlayerBoy",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -111,9 +114,9 @@
 			"UI_Talent_S_Lisa_04"
 		],
 		"skillOrder": [
-			10060,
-			10061,
-			10062
+			"10060",
+			"10061",
+			"10062"
 		],
 		"skills": {
 			"10060": "Skill_A_Catalyst_MD",
@@ -121,11 +124,12 @@
 			"10062": "Skill_E_Lisa_01"
 		},
 		"proudMap": {
-			"10060": 431,
-			"10061": 432,
-			"10062": 439
+			"10060": "431",
+			"10061": "432",
+			"10062": "439"
 		},
-		"nameTextHashMap": 3344622722,
+		"nameTextHashMap": "3344622722",
+		"iconName": "UI_AvatarIcon_Lisa",
 		"sideIconName": "UI_AvatarIcon_side_Lisa",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -140,21 +144,22 @@
 			"UI_Talent_S_PlayerWind_04"
 		],
 		"skillOrder": [
-			100553,
-			10067,
-			10068
+			"100553",
+			"10067",
+			"10068"
 		],
 		"skills": {
 			"10067": "Skill_S_PlayerWind_01",
 			"10068": "Skill_E_PlayerWind_01",
 			"100553": "Skill_A_01"
 		},
-		"nameTextHashMap": 3816664530,
+		"nameTextHashMap": "3816664530",
 		"proudMap": {
-			"10067": 732,
-			"10068": 739,
-			"100553": 731
+			"10067": "732",
+			"10068": "739",
+			"100553": "731"
 		},
+		"iconName": "UI_AvatarIcon_PlayerGirl",
 		"sideIconName": "UI_AvatarIcon_side_PlayerGirl",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -169,9 +174,9 @@
 			"UI_Talent_S_Barbara_04"
 		],
 		"skillOrder": [
-			10070,
-			10071,
-			10072
+			"10070",
+			"10071",
+			"10072"
 		],
 		"skills": {
 			"10070": "Skill_A_Catalyst_MD",
@@ -179,11 +184,12 @@
 			"10072": "Skill_E_Barbara_01"
 		},
 		"proudMap": {
-			"10070": 1431,
-			"10071": 1432,
-			"10072": 1439
+			"10070": "1431",
+			"10071": "1432",
+			"10072": "1439"
 		},
-		"nameTextHashMap": 3775299170,
+		"nameTextHashMap": "3775299170",
+		"iconName": "UI_AvatarIcon_Barbara",
 		"sideIconName": "UI_AvatarIcon_side_Barbara",
 		"qualityType": "QUALITY_PURPLE",
 		"costumes": {
@@ -220,7 +226,8 @@
 			"10074": 1532,
 			"10075": 1539
 		},
-		"nameTextHashMap": 4119663210,
+		"nameTextHashMap": "4119663210",
+		"iconName": "UI_AvatarIcon_Kaeya",
 		"sideIconName": "UI_AvatarIcon_side_Kaeya",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -249,7 +256,8 @@
 			"10161": 1632,
 			"10165": 1639
 		},
-		"nameTextHashMap": 3608180322,
+		"nameTextHashMap": "3608180322",
+		"iconName": "UI_AvatarIcon_Diluc",
 		"sideIconName": "UI_AvatarIcon_side_Diluc",
 		"qualityType": "QUALITY_ORANGE",
 		"costumes": {
@@ -286,7 +294,8 @@
 			"10202": 2032,
 			"10203": 2039
 		},
-		"nameTextHashMap": 4160147242,
+		"nameTextHashMap": "4160147242",
+		"iconName": "UI_AvatarIcon_Razor",
 		"sideIconName": "UI_AvatarIcon_side_Razor",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -315,7 +324,8 @@
 			"10032": 2132,
 			"10041": 2131
 		},
-		"nameTextHashMap": 1966438658,
+		"nameTextHashMap": "1966438658",
+		"iconName": "UI_AvatarIcon_Ambor",
 		"sideIconName": "UI_AvatarIcon_side_Ambor",
 		"qualityType": "QUALITY_PURPLE",
 		"costumes": {
@@ -352,7 +362,8 @@
 			"10224": 2232,
 			"10225": 2239
 		},
-		"nameTextHashMap": 2466140362,
+		"nameTextHashMap": "2466140362",
+		"iconName": "UI_AvatarIcon_Venti",
 		"sideIconName": "UI_AvatarIcon_side_Venti",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -381,7 +392,8 @@
 			"10232": 2332,
 			"10235": 2339
 		},
-		"nameTextHashMap": 1130996346,
+		"nameTextHashMap": "1130996346",
+		"iconName": "UI_AvatarIcon_Xiangling",
 		"sideIconName": "UI_AvatarIcon_side_Xiangling",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -410,7 +422,8 @@
 			"10242": 2432,
 			"10245": 2439
 		},
-		"nameTextHashMap": 2646367730,
+		"nameTextHashMap": "2646367730",
+		"iconName": "UI_AvatarIcon_Beidou",
 		"sideIconName": "UI_AvatarIcon_side_Beidou",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -439,7 +452,8 @@
 			"10382": 2532,
 			"10385": 2539
 		},
-		"nameTextHashMap": 4197635682,
+		"nameTextHashMap": "4197635682",
+		"iconName": "UI_AvatarIcon_Xingqiu",
 		"sideIconName": "UI_AvatarIcon_side_Xingqiu",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -468,7 +482,8 @@
 			"10262": 2632,
 			"10265": 2639
 		},
-		"nameTextHashMap": 1021947690,
+		"nameTextHashMap": "1021947690",
+		"iconName": "UI_AvatarIcon_Xiao",
 		"sideIconName": "UI_AvatarIcon_side_Xiao",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -497,7 +512,8 @@
 			"10272": 2732,
 			"10274": 2739
 		},
-		"nameTextHashMap": 4127888970,
+		"nameTextHashMap": "4127888970",
+		"iconName": "UI_AvatarIcon_Ningguang",
 		"sideIconName": "UI_AvatarIcon_side_Ningguang",
 		"qualityType": "QUALITY_PURPLE",
 		"costumes": {
@@ -534,7 +550,8 @@
 			"10292": 2932,
 			"10295": 2939
 		},
-		"nameTextHashMap": 3339083250,
+		"nameTextHashMap": "3339083250",
+		"iconName": "UI_AvatarIcon_Klee",
 		"sideIconName": "UI_AvatarIcon_side_Klee",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -563,7 +580,8 @@
 			"10302": 3032,
 			"10303": 3039
 		},
-		"nameTextHashMap": 3862787418,
+		"nameTextHashMap": "3862787418",
+		"iconName": "UI_AvatarIcon_Zhongli",
 		"sideIconName": "UI_AvatarIcon_side_Zhongli",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -592,7 +610,8 @@
 			"10312": 3132,
 			"10313": 3139
 		},
-		"nameTextHashMap": 3277782506,
+		"nameTextHashMap": "3277782506",
+		"iconName": "UI_AvatarIcon_Fischl",
 		"sideIconName": "UI_AvatarIcon_side_Fischl",
 		"qualityType": "QUALITY_PURPLE",
 		"costumes": {
@@ -629,7 +648,8 @@
 			"10322": 3232,
 			"10323": 3239
 		},
-		"nameTextHashMap": 968893378,
+		"nameTextHashMap": "968893378",
+		"iconName": "UI_AvatarIcon_Bennett",
 		"sideIconName": "UI_AvatarIcon_side_Bennett",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -658,7 +678,8 @@
 			"10332": 3332,
 			"10333": 3339
 		},
-		"nameTextHashMap": 3847143266,
+		"nameTextHashMap": "3847143266",
+		"iconName": "UI_AvatarIcon_Tartaglia",
 		"sideIconName": "UI_AvatarIcon_side_Tartaglia",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -687,7 +708,8 @@
 			"10342": 3432,
 			"10343": 3439
 		},
-		"nameTextHashMap": 1921418842,
+		"nameTextHashMap": "1921418842",
+		"iconName": "UI_AvatarIcon_Noel",
 		"sideIconName": "UI_AvatarIcon_side_Noel",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -716,7 +738,8 @@
 			"10352": 3532,
 			"10353": 3539
 		},
-		"nameTextHashMap": 168956722,
+		"nameTextHashMap": "168956722",
+		"iconName": "UI_AvatarIcon_Qiqi",
 		"sideIconName": "UI_AvatarIcon_side_Qiqi",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -745,7 +768,8 @@
 			"10402": 3632,
 			"10403": 3639
 		},
-		"nameTextHashMap": 2876340530,
+		"nameTextHashMap": "2876340530",
+		"iconName": "UI_AvatarIcon_Chongyun",
 		"sideIconName": "UI_AvatarIcon_side_Chongyun",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -774,7 +798,8 @@
 			"10372": 3732,
 			"10373": 3739
 		},
-		"nameTextHashMap": 2679781122,
+		"nameTextHashMap": "2679781122",
+		"iconName": "UI_AvatarIcon_Ganyu",
 		"sideIconName": "UI_AvatarIcon_side_Ganyu",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -803,7 +828,8 @@
 			"10387": 3832,
 			"10388": 3839
 		},
-		"nameTextHashMap": 4108620722,
+		"nameTextHashMap": "4108620722",
+		"iconName": "UI_AvatarIcon_Albedo",
 		"sideIconName": "UI_AvatarIcon_side_Albedo",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -832,7 +858,8 @@
 			"10392": 3932,
 			"10395": 3939
 		},
-		"nameTextHashMap": 1468367538,
+		"nameTextHashMap": "1468367538",
+		"iconName": "UI_AvatarIcon_Diona",
 		"sideIconName": "UI_AvatarIcon_side_Diona",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -861,7 +888,8 @@
 			"10412": 4132,
 			"10415": 4139
 		},
-		"nameTextHashMap": 1113306282,
+		"nameTextHashMap": "1113306282",
+		"iconName": "UI_AvatarIcon_Mona",
 		"sideIconName": "UI_AvatarIcon_side_Mona",
 		"qualityType": "QUALITY_ORANGE",
 		"costumes": {
@@ -898,7 +926,8 @@
 			"10422": 4232,
 			"10425": 4239
 		},
-		"nameTextHashMap": 1864015138,
+		"nameTextHashMap": "1864015138",
+		"iconName": "UI_AvatarIcon_Keqing",
 		"sideIconName": "UI_AvatarIcon_side_Keqing",
 		"qualityType": "QUALITY_ORANGE",
 		"costumes": {
@@ -935,7 +964,8 @@
 			"10432": 4332,
 			"10435": 4339
 		},
-		"nameTextHashMap": 1053433018,
+		"nameTextHashMap": "1053433018",
+		"iconName": "UI_AvatarIcon_Sucrose",
 		"sideIconName": "UI_AvatarIcon_side_Sucrose",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -964,7 +994,8 @@
 			"10442": 4432,
 			"10443": 4439
 		},
-		"nameTextHashMap": 4273845410,
+		"nameTextHashMap": "4273845410",
+		"iconName": "UI_AvatarIcon_Xinyan",
 		"sideIconName": "UI_AvatarIcon_side_Xinyan",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -993,7 +1024,8 @@
 			"10452": 4532,
 			"10453": 4539
 		},
-		"nameTextHashMap": 4260733330,
+		"nameTextHashMap": "4260733330",
+		"iconName": "UI_AvatarIcon_Rosaria",
 		"sideIconName": "UI_AvatarIcon_side_Rosaria",
 		"qualityType": "QUALITY_PURPLE",
 		"costumes": {
@@ -1030,7 +1062,8 @@
 			"10462": 4632,
 			"10463": 4639
 		},
-		"nameTextHashMap": 1940919994,
+		"nameTextHashMap": "1940919994",
+		"iconName": "UI_AvatarIcon_Hutao",
 		"sideIconName": "UI_AvatarIcon_side_Hutao",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1059,7 +1092,8 @@
 			"10472": 4732,
 			"10475": 4739
 		},
-		"nameTextHashMap": 88505754,
+		"nameTextHashMap": "88505754",
+		"iconName": "UI_AvatarIcon_Kazuha",
 		"sideIconName": "UI_AvatarIcon_side_Kazuha",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1088,7 +1122,8 @@
 			"10482": 4832,
 			"10485": 4839
 		},
-		"nameTextHashMap": 697277554,
+		"nameTextHashMap": "697277554",
+		"iconName": "UI_AvatarIcon_Feiyan",
 		"sideIconName": "UI_AvatarIcon_side_Feiyan",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1117,7 +1152,8 @@
 			"10492": 4932,
 			"10495": 4939
 		},
-		"nameTextHashMap": 2504399314,
+		"nameTextHashMap": "2504399314",
+		"iconName": "UI_AvatarIcon_Yoimiya",
 		"sideIconName": "UI_AvatarIcon_side_Yoimiya",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1146,7 +1182,8 @@
 			"10502": 5032,
 			"10505": 5039
 		},
-		"nameTextHashMap": 3555115602,
+		"nameTextHashMap": "3555115602",
+		"iconName": "UI_AvatarIcon_Tohma",
 		"sideIconName": "UI_AvatarIcon_side_Tohma",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1175,7 +1212,8 @@
 			"10512": 5132,
 			"10515": 5139
 		},
-		"nameTextHashMap": 3717667418,
+		"nameTextHashMap": "3717667418",
+		"iconName": "UI_AvatarIcon_Eula",
 		"sideIconName": "UI_AvatarIcon_side_Eula",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1204,7 +1242,8 @@
 			"10522": 5232,
 			"10525": 5239
 		},
-		"nameTextHashMap": 3024507506,
+		"nameTextHashMap": "3024507506",
+		"iconName": "UI_AvatarIcon_Shougun",
 		"sideIconName": "UI_AvatarIcon_side_Shougun",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1233,7 +1272,8 @@
 			"10532": 5332,
 			"10535": 5339
 		},
-		"nameTextHashMap": 2388785242,
+		"nameTextHashMap": "2388785242",
+		"iconName": "UI_AvatarIcon_Sayu",
 		"sideIconName": "UI_AvatarIcon_side_Sayu",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1262,7 +1302,8 @@
 			"10542": 5432,
 			"10545": 5439
 		},
-		"nameTextHashMap": 3914045794,
+		"nameTextHashMap": "3914045794",
+		"iconName": "UI_AvatarIcon_Kokomi",
 		"sideIconName": "UI_AvatarIcon_side_Kokomi",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1291,7 +1332,8 @@
 			"10552": 5532,
 			"10555": 5539
 		},
-		"nameTextHashMap": 3400133546,
+		"nameTextHashMap": "3400133546",
+		"iconName": "UI_AvatarIcon_Gorou",
 		"sideIconName": "UI_AvatarIcon_side_Gorou",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1320,7 +1362,8 @@
 			"10562": 5632,
 			"10565": 5639
 		},
-		"nameTextHashMap": 1483922610,
+		"nameTextHashMap": "1483922610",
+		"iconName": "UI_AvatarIcon_Sara",
 		"sideIconName": "UI_AvatarIcon_side_Sara",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1349,7 +1392,8 @@
 			"10572": 5732,
 			"10575": 5739
 		},
-		"nameTextHashMap": 3068316954,
+		"nameTextHashMap": "3068316954",
+		"iconName": "UI_AvatarIcon_Itto",
 		"sideIconName": "UI_AvatarIcon_side_Itto",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1378,7 +1422,8 @@
 			"10582": 5832,
 			"10585": 5839
 		},
-		"nameTextHashMap": 2713453234,
+		"nameTextHashMap": "2713453234",
+		"iconName": "UI_AvatarIcon_Yae",
 		"sideIconName": "UI_AvatarIcon_side_Yae",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1407,7 +1452,8 @@
 			"10592": 5932,
 			"10595": 5939
 		},
-		"nameTextHashMap": 646032090,
+		"nameTextHashMap": "646032090",
+		"iconName": "UI_AvatarIcon_Heizo",
 		"sideIconName": "UI_AvatarIcon_side_Heizo",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1436,7 +1482,8 @@
 			"10607": 6032,
 			"10610": 6039
 		},
-		"nameTextHashMap": 2848374378,
+		"nameTextHashMap": "2848374378",
+		"iconName": "UI_AvatarIcon_Yelan",
 		"sideIconName": "UI_AvatarIcon_side_Yelan",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1465,7 +1512,8 @@
 			"10622": 6232,
 			"10625": 6239
 		},
-		"nameTextHashMap": 3689108098,
+		"nameTextHashMap": "3689108098",
+		"iconName": "UI_AvatarIcon_Aloy",
 		"sideIconName": "UI_AvatarIcon_side_Aloy",
 		"qualityType": "QUALITY_ORANGE_SP"
 	},
@@ -1494,7 +1542,8 @@
 			"10632": 6332,
 			"10635": 6339
 		},
-		"nameTextHashMap": 334242634,
+		"nameTextHashMap": "334242634",
+		"iconName": "UI_AvatarIcon_Shenhe",
 		"sideIconName": "UI_AvatarIcon_side_Shenhe",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1523,7 +1572,8 @@
 			"10642": 6432,
 			"10643": 6439
 		},
-		"nameTextHashMap": 655825874,
+		"nameTextHashMap": "655825874",
+		"iconName": "UI_AvatarIcon_Yunjin",
 		"sideIconName": "UI_AvatarIcon_side_Yunjin",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1552,7 +1602,8 @@
 			"10652": 6532,
 			"10655": 6539
 		},
-		"nameTextHashMap": 1940821986,
+		"nameTextHashMap": "1940821986",
+		"iconName": "UI_AvatarIcon_Shinobu",
 		"sideIconName": "UI_AvatarIcon_side_Shinobu",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1581,7 +1632,8 @@
 			"10662": 6632,
 			"10665": 6639
 		},
-		"nameTextHashMap": 1588620330,
+		"nameTextHashMap": "1588620330",
+		"iconName": "UI_AvatarIcon_Ayato",
 		"sideIconName": "UI_AvatarIcon_side_Ayato",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1610,7 +1662,8 @@
 			"10672": 6732,
 			"10675": 6739
 		},
-		"nameTextHashMap": 2948362178,
+		"nameTextHashMap": "2948362178",
+		"iconName": "UI_AvatarIcon_Collei",
 		"sideIconName": "UI_AvatarIcon_side_Collei",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1639,7 +1692,8 @@
 			"10682": 6832,
 			"10685": 6839
 		},
-		"nameTextHashMap": 388272194,
+		"nameTextHashMap": "388272194",
+		"iconName": "UI_AvatarIcon_Dori",
 		"sideIconName": "UI_AvatarIcon_side_Dori",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1668,7 +1722,8 @@
 			"10692": 6932,
 			"10695": 6939
 		},
-		"nameTextHashMap": 2506955778,
+		"nameTextHashMap": "2506955778",
+		"iconName": "UI_AvatarIcon_Tighnari",
 		"sideIconName": "UI_AvatarIcon_side_Tighnari",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1697,7 +1752,8 @@
 			"10702": 7032,
 			"10705": 7039
 		},
-		"nameTextHashMap": 3850149970,
+		"nameTextHashMap": "3850149970",
+		"iconName": "UI_AvatarIcon_Nilou",
 		"sideIconName": "UI_AvatarIcon_side_Nilou",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1726,7 +1782,8 @@
 			"10712": 7132,
 			"10715": 7139
 		},
-		"nameTextHashMap": 1049891906,
+		"nameTextHashMap": "1049891906",
+		"iconName": "UI_AvatarIcon_Cyno",
 		"sideIconName": "UI_AvatarIcon_side_Cyno",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1755,7 +1812,8 @@
 			"10722": 7232,
 			"10725": 7239
 		},
-		"nameTextHashMap": 3092975658,
+		"nameTextHashMap": "3092975658",
+		"iconName": "UI_AvatarIcon_Candace",
 		"sideIconName": "UI_AvatarIcon_side_Candace",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1784,7 +1842,8 @@
 			"10732": 7332,
 			"10735": 7339
 		},
-		"nameTextHashMap": 712501082,
+		"nameTextHashMap": "712501082",
+		"iconName": "UI_AvatarIcon_Nahida",
 		"sideIconName": "UI_AvatarIcon_side_Nahida",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1813,7 +1872,8 @@
 			"10742": 7432,
 			"10745": 7439
 		},
-		"nameTextHashMap": 2889777514,
+		"nameTextHashMap": "2889777514",
+		"iconName": "UI_AvatarIcon_Layla",
 		"sideIconName": "UI_AvatarIcon_side_Layla",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1842,7 +1902,8 @@
 			"10752": 7532,
 			"10755": 7539
 		},
-		"nameTextHashMap": 3230559562,
+		"nameTextHashMap": "3230559562",
+		"iconName": "UI_AvatarIcon_Wanderer",
 		"sideIconName": "UI_AvatarIcon_side_Wanderer",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1871,7 +1932,8 @@
 			"10762": 7632,
 			"10765": 7639
 		},
-		"nameTextHashMap": 2387711994,
+		"nameTextHashMap": "2387711994",
+		"iconName": "UI_AvatarIcon_Faruzan",
 		"sideIconName": "UI_AvatarIcon_side_Faruzan",
 		"qualityType": "QUALITY_PURPLE"
 	},
@@ -1895,12 +1957,13 @@
 			"10068": "None",
 			"100540": "Skill_A_01"
 		},
-		"nameTextHashMap": 3816664530,
+		"nameTextHashMap": "3816664530",
 		"proudMap": {
 			"10067": 732,
 			"10068": 739,
 			"100540": 731
 		},
+		"iconName": "UI_AvatarIcon_PlayerBoy",
 		"sideIconName": "UI_AvatarIcon_side_PlayerBoy",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1926,12 +1989,13 @@
 			"10068": "Skill_E_PlayerWind_01",
 			"100543": "Skill_A_01"
 		},
-		"nameTextHashMap": 1533656818,
+		"nameTextHashMap": "1533656818",
 		"proudMap": {
 			"10067": 732,
 			"10068": 739,
 			"100543": 730
 		},
+		"iconName": "UI_AvatarIcon_PlayerBoy",
 		"sideIconName": "UI_AvatarIcon_side_PlayerBoy",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1956,12 +2020,13 @@
 			"10078": "Skill_E_PlayerRock_01",
 			"100545": "Skill_A_01"
 		},
-		"nameTextHashMap": 1533656818,
+		"nameTextHashMap": "1533656818",
 		"proudMap": {
 			"10077": 932,
 			"10078": 939,
 			"100545": 730
 		},
+		"iconName": "UI_AvatarIcon_PlayerBoy",
 		"sideIconName": "UI_AvatarIcon_side_PlayerBoy",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -1985,12 +2050,13 @@
 			"10605": "Skill_E_PlayerElectric_01",
 			"100546": "Skill_A_01"
 		},
-		"nameTextHashMap": 1533656818,
+		"nameTextHashMap": "1533656818",
 		"proudMap": {
 			"10602": 1032,
 			"10605": 1039,
 			"100546": 1030
 		},
+		"iconName": "UI_AvatarIcon_PlayerBoy",
 		"sideIconName": "UI_AvatarIcon_side_PlayerBoy",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -2014,12 +2080,13 @@
 			"10118": "Skill_S_PlayerGrass_01",
 			"100547": "Skill_A_01"
 		},
-		"nameTextHashMap": 1533656818,
+		"nameTextHashMap": "1533656818",
 		"proudMap": {
 			"10117": 1132,
 			"10118": 1139,
 			"100547": 1130
 		},
+		"iconName": "UI_AvatarIcon_PlayerBoy",
 		"sideIconName": "UI_AvatarIcon_side_PlayerBoy",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -2043,12 +2110,13 @@
 			"10068": "None",
 			"100550": "Skill_A_01"
 		},
-		"nameTextHashMap": 3816664530,
+		"nameTextHashMap": "3816664530",
 		"proudMap": {
 			"10067": 732,
 			"10068": 739,
 			"100550": 731
 		},
+		"iconName": "UI_AvatarIcon_PlayerGirl",
 		"sideIconName": "UI_AvatarIcon_side_PlayerGirl",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -2074,12 +2142,13 @@
 			"10068": "Skill_E_PlayerWind_01",
 			"100553": "Skill_A_01"
 		},
-		"nameTextHashMap": 3816664530,
+		"nameTextHashMap": "3816664530",
 		"proudMap": {
 			"10067": 732,
 			"10068": 739,
 			"100553": 731
 		},
+		"iconName": "UI_AvatarIcon_PlayerGirl",
 		"sideIconName": "UI_AvatarIcon_side_PlayerGirl",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -2104,12 +2173,13 @@
 			"10078": "Skill_E_PlayerRock_01",
 			"100555": "Skill_A_01"
 		},
-		"nameTextHashMap": 3816664530,
+		"nameTextHashMap": "3816664530",
 		"proudMap": {
 			"10077": 932,
 			"10078": 939,
 			"100555": 731
 		},
+		"iconName": "UI_AvatarIcon_PlayerGirl",
 		"sideIconName": "UI_AvatarIcon_side_PlayerGirl",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -2133,12 +2203,13 @@
 			"10605": "Skill_E_PlayerElectric_01",
 			"100556": "Skill_A_01"
 		},
-		"nameTextHashMap": 3816664530,
+		"nameTextHashMap": "3816664530",
 		"proudMap": {
 			"10602": 1032,
 			"10605": 1039,
 			"100556": 1031
 		},
+		"iconName": "UI_AvatarIcon_PlayerGirl",
 		"sideIconName": "UI_AvatarIcon_side_PlayerGirl",
 		"qualityType": "QUALITY_ORANGE"
 	},
@@ -2162,12 +2233,13 @@
 			"10118": "Skill_S_PlayerGrass_01",
 			"100557": "Skill_A_01"
 		},
-		"nameTextHashMap": 3816664530,
+		"nameTextHashMap": "3816664530",
 		"proudMap": {
 			"10117": 1132,
 			"10118": 1139,
 			"100557": 1131
 		},
+		"iconName": "UI_AvatarIcon_PlayerGirl",
 		"sideIconName": "UI_AvatarIcon_side_PlayerGirl",
 		"qualityType": "QUALITY_ORANGE"
 	}

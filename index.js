@@ -10,20 +10,6 @@ const client = new Client({
 	partials: ['CHANNEL']
 })
 
-const { readdirSync: readDir, writeFileSync } = require('node:fs')
-
-// will look like { ping: { name: 'ping', command: (...) => ... } }
-const globalCommandList = {}
-
-for (const fileName of readDir('./commands')) {
-	const command = require(`./commands/${fileName}`)
-
-	// Prevent 'undefined'
-	if (!command.name) continue
-
-	globalCommandList[command.name] = command
-}
-
 client.on('ready', () => {
 	console.log(`Client ready! Logged in as ${client.user.tag}`)
 })
@@ -76,6 +62,46 @@ const USER_CONFIGS_PATH = './data/user-configs.json'
 const guildConfigurations = require(GUILD_CONFIGS_PATH)
 const userConfigurations  = require(USER_CONFIGS_PATH)
 
+
+const { readdirSync: readDir, writeFileSync, watch } = require('node:fs')
+
+// will look like { ping: { name: 'ping', command: (...) => ... } }
+const globalCommandList = {}
+
+/** @type {Object<string, number>} */
+const commandLoadTimes = {}
+
+for (const fileName of readDir('./commands')) {
+	const command = require(`./commands/${fileName}`)
+
+	// Prevent 'undefined'
+	if (!command.name) continue
+
+	commandLoadTimes[command.name] = Date.now()
+	globalCommandList[command.name] = command
+}
+
+watch('./commands', (type, file) => {
+	const path = `./commands/${file}`
+	if (type === 'change') {
+		// Remove the file path from the cache
+		delete require.cache[require.resolve(path)]
+
+		// Reload the file
+		const command = require(path)
+
+		// Ignore if was saved less than 2 seconds ago
+		if (Date.now() - commandLoadTimes[command.name] < 2000) return
+
+		const equals = utility.equals(globalCommandList[command.name], command)
+		// Ignore if there are no changes
+		if (equals) return
+
+		commandLoadTimes[command.name] = Date.now()
+		globalCommandList[command.name] = command
+	}
+})
+
 function saveFile(path, data) {
 	writeFileSync(path, JSON.stringify(data, null, 2))
 }
@@ -113,11 +139,14 @@ class Embed extends EmbedBuilder {
 	constructor(options) {
 		super({
 			color: 0x5050FF,
+			description: 'Something went wrong',
 			...options,
-			author: {
-				name: `${options.message.inGuild ? options.message.member.displayName : options.message.author.name}`,
-				icon_url: options.message.author.displayAvatarURL()
-			}
+			author: options.message
+				? {
+						name: `${options.message.inGuild ? options.message.member.displayName : options.message.author.name}`,
+						icon_url: options.message.author.displayAvatarURL()
+					}
+				: null
 		})
 	}
 	setDescription(...lines) {

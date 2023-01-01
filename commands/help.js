@@ -5,7 +5,7 @@ module.exports = {
 	command: ({ message, commandList, configuration: { guild }, args: [commandName], prefix, Embed, utility: { join } }) => {
 		if (!commandName) {
 			//
-		} else {			
+		} else {	
 			if (!commandList.has(commandName)) {
 				message.channel.send(`Unknown command: _${commandName}_`)
 				return
@@ -17,7 +17,7 @@ module.exports = {
 				prefix,
 				commandName,
 				args,
-				guild.aliases && commandName in guild.aliases && ` (alias for ${name})`
+				guild.aliases && commandName in guild.aliases && ` (alias for ${name})` || null
 			)
 		}
 

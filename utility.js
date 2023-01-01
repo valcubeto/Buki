@@ -25,7 +25,31 @@ function escapeRegExp(string) {
 	return string.replace(/[\[\](){}?*+.^$|\\]/g, '\\$&')
 }
 
+/**
+ * @param {any} value
+ * @param {any} other
+ * @returns {boolean}
+ */
+function equals(value, other) {
+	if (typeof value !== typeof other) return false
+
+	if (value === null && value === undefined) return value === other
+
+	if (['string', 'number', 'bigint'].includes(typeof value)) return value === other
+
+	if (['function', 'symbol'].includes(typeof value)) return value.toString() === other.toString()
+
+	const objectKeys = Object.keys(value)
+	const otherKeys = Object.keys(other)
+	if (objectKeys.length !== otherKeys.length) return false
+	for (const key of objectKeys) {
+		if (!equals(value[key], other[key])) return false
+	}
+	return true
+}
+	
 module.exports = {
 	join,
-	escapeRegExp
+	escapeRegExp,
+	equals
 }
