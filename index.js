@@ -1,4 +1,4 @@
-const { Client, IntentsBitField: { Flags }, EmbedBuilder } = require('discord.js')
+const { Client, IntentsBitField: { Flags }, EmbedBuilder, PermissionsBitField } = require('discord.js')
 
 const client = new Client({
 	intents: [
@@ -14,7 +14,7 @@ client.on('ready', () => {
 	console.log(`Client ready! Logged in as ${client.user.tag}`)
 })
 
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
 	// Ignore bot messages
 	if (client.user.id === message.author.id) return
 
@@ -31,12 +31,65 @@ client.on('messageCreate', message => {
 	// Removes the first element from the argument list and returns it. If there is only the command, the list will be empty
 	const usedCommand = args.shift().toLowerCase()
 
-	const commandList = new CommandList(configuration.guild)
+	const commandList = new CommandList(message.inGuild() ? configuration.guild : null)
 
 	// Handle unknown commands
 	if (!commandList.has(usedCommand)) {
-		message.channel.send(`Unknown command: ${usedCommand}`)
+		message.channel.send(`El comando ${usedCommand} no existe qwq`)
 		return
+	}
+
+	const command = commandList.get(usedCommand)
+
+	if (command.inGuild && !message.inGuild()) {
+		message.channel.send('Este comando solo está disponible para servidores')
+	}
+
+	const botInGuild = await message.guild.members.fetch(client.user.id)
+	const channelPermissions = message.channel.permissionsFor(botInGuild)
+	if (!channelPermissions.has('SendMessages')) {
+		message.author.dmChannel.send(`No puedo mandar mensajes en ${message.channel.toString()}!`).catch(avoid)
+		return
+	}
+
+	if (command.botPermissions) {
+		const missingPermissions = command.botPermissions.filter(permission => !channelPermissions.has(permission))
+
+		if (missingPermissions.length !== 0) {
+			message.channel.send(`Me faltan permisos: ${missingPermissions.join(', ')}`)
+			return
+		}
+	}
+
+	if (command.permissions) {
+		const channelPermissions = message.channel.permissionsFor(message.author.id)
+		const missingPermissions = command.permissions.filter(permission => !channelPermissions.has(permission))
+
+		if (missingPermissions.length !== 0) {
+			message.channel.send(`Te faltan permisos: ${missingPermissions.join(', ')}`)
+			return
+		}
+	}
+
+	if (command.args) {
+		for (const i in command.args) {
+			const arg = command.args[i]
+			if (arg.required && !args[i]) {
+				message.channel.send(`Faltan ${command.args.length - args.length} argumentos`)
+				return
+			}
+			if (arg.value) {
+				if (arg.value instanceof RegExp) {
+					if (!arg.value.test(args[i])) {
+						message.channel.send(arg.error ?? `El argumento nro ${i + 1} debe seguir el siguiente patrón: ${arg.value.toString()}`)
+						return
+					}
+				} else if (![undefined].concat(arg.value).includes(args[i])) {
+					message.channel.send(arg.error ?? `El argumento nro ${i + 1} debe ser uno de los siguientes valores: ${arg.value.join(', ')}`)
+					return
+				}
+			}
+		}
 	}
 
 	// Execute the command
@@ -66,39 +119,50 @@ const userConfigurations  = require(USER_CONFIGS_PATH)
 const { readdirSync: readDir, writeFileSync, watch } = require('node:fs')
 
 // will look like { ping: { name: 'ping', command: (...) => ... } }
+/** @type {{ [key: string]: Command }} */
 const globalCommandList = {}
 
 /** @type {Object<string, number>} */
 const commandLoadTimes = {}
 
-for (const fileName of readDir('./commands')) {
-	const command = require(`./commands/${fileName}`)
+for (const file of readDir('./commands')) {
+	const command = require(`./commands/${file}`)
 
 	// Prevent 'undefined'
 	if (!command.name) continue
 
-	commandLoadTimes[command.name] = Date.now()
+	commandLoadTimes[file] = Date.now()
 	globalCommandList[command.name] = command
 }
 
 watch('./commands', (type, file) => {
 	const path = `./commands/${file}`
 	if (type === 'change') {
-		// Remove the file path from the cache
-		delete require.cache[require.resolve(path)]
-
-		// Reload the file
-		const command = require(path)
+		const now = Date.now()
 
 		// Ignore if was saved less than 2 seconds ago
-		if (Date.now() - commandLoadTimes[command.name] < 2000) return
+		if (now - commandLoadTimes[file] < 2000) return
 
-		const equals = utility.equals(globalCommandList[command.name], command)
-		// Ignore if there are no changes
-		if (equals) return
+		try {
+			// Remove the file path from the cache
+			delete require.cache[require.resolve(path)]
 
-		commandLoadTimes[command.name] = Date.now()
-		globalCommandList[command.name] = command
+			// Reload the file
+			const command = require(path)
+
+			const equals = utility.equals(globalCommandList[command.name], command)
+			// Ignore if there are no changes
+			if (equals) return
+
+			console.log(`Updated ${file} (${command.name}) at ${utility.formatDate(now)}`)
+
+			commandLoadTimes[command.name] = now
+			globalCommandList[command.name] = command
+		} catch (error) {
+			// Prevent load files with errors
+			console.log(`Error while importing ${file}`)
+			console.error(error.toString())
+		}
 	}
 })
 
@@ -121,7 +185,7 @@ class Configuration {
 
 class CommandList {
 	constructor(guildConfiguration) {
-		this.aliases = guildConfiguration.aliases ?? {}
+		this.aliases = guildConfiguration?.aliases ?? {}
 	}
 	has(command) {
 		return command in this.aliases || command in globalCommandList
@@ -143,7 +207,7 @@ class Embed extends EmbedBuilder {
 			...options,
 			author: options.message
 				? {
-						name: `${options.message.inGuild ? options.message.member.displayName : options.message.author.name}`,
+						name: `${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
 						icon_url: options.message.author.displayAvatarURL()
 					}
 				: null

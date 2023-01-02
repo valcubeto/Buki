@@ -3,12 +3,12 @@ interface ShowAvatarInfo {
 	level: number
 }
 
-interface ReliquaryStat {
+interface Stat {
 	appendPropId: string
 	statValue: number
 }
 
-interface Equipment {
+interface Artifact {
 	flat: {
 		equipType: string
 		icon: string
@@ -16,8 +16,8 @@ interface Equipment {
 		nameTextMapHash: string
 		setNameTextMapHash: string
 		rankLevel: number
-		reliquaryMainStat: ReliquaryStat
-		reliquarySubstats: ReliquaryStat[]
+		reliquaryMainStat: Stat
+		reliquarySubstats: Stat[]
 	}
 	itemId: number
 	reliquary: {
@@ -27,9 +27,25 @@ interface Equipment {
 	}
 }
 
+interface Weapon {
+	flat: {
+		icon: string
+		itemType: string
+		nameTextMapHash: string
+		rankLevel: number
+		weaponStats: Stat[]
+	}
+	itemId: number
+	weapon: {
+		affixMap: Object<number, number>
+		level: number
+		promoteLevel: number
+	}
+}
+
 interface AvatarInfo {
 	avatarId: number
-	equipList: Equipment[]
+	equipList: (Artifact | Weapon)[]
 	fetterInfo: {
 		expLevel: number
 	}
@@ -43,9 +59,7 @@ interface AvatarInfo {
 			val?: number
 		}
 		skillDepotId: number
-		skillLevelMap: {
-			[number]: number
-		}
+		skillLevelMap: Object<number, number>
 	}
 	inherentProudSkillList: number[]
 }

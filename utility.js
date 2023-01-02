@@ -47,9 +47,34 @@ function equals(value, other) {
 	}
 	return true
 }
-	
+
+/**
+ * Formats the date using the YYYY-MM-DD HH:MM:ss.mmm format
+ * @param {Date | number} time
+ */
+function formatDate(time) {
+	const date = typeof time === 'number' ? new Date(time) : time
+
+	return [
+		date.getFullYear(),
+		'-',
+		`${date.getMonth() + 1}`.padStart(2, '0'),
+		'-',
+		`${date.getDate()}`.padStart(2, '0'),
+		' ',
+		`${date.getHours()}`.padStart(2, '0'),
+		':',
+		`${date.getMinutes()}`.padStart(2, '0'),
+		':',
+		`${date.getSeconds()}`.padStart(2, '0'),
+		'.',
+		`${date.getMilliseconds()}`.padStart(3, '0'),
+	].join('')
+}
+
 module.exports = {
 	join,
 	escapeRegExp,
-	equals
+	equals,
+	formatDate
 }
