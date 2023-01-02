@@ -1,4 +1,4 @@
-const { Client, IntentsBitField: { Flags }, EmbedBuilder, PermissionsBitField } = require('discord.js')
+const { Client, IntentsBitField: { Flags }, EmbedBuilder } = require('discord.js')
 
 const client = new Client({
 	intents: [
@@ -10,8 +10,11 @@ const client = new Client({
 	partials: ['CHANNEL']
 })
 
+const uptime = Date.now()
+
 client.on('ready', () => {
-	console.log(`Client ready! Logged in as ${client.user.tag}`)
+	const date = new Date(uptime)
+	console.log(`Client ready! Logged in as ${client.user.tag} after ${date.getSeconds()}.${date.getMilliseconds().toString().padStart(3, '0')} seconds`)
 })
 
 client.on('messageCreate', async message => {
@@ -56,7 +59,7 @@ client.on('messageCreate', async message => {
 		const missingPermissions = command.botPermissions.filter(permission => !channelPermissions.has(permission))
 
 		if (missingPermissions.length !== 0) {
-			message.channel.send(`Me faltan permisos: ${missingPermissions.join(', ')}`)
+			message.reply(`Me faltan permisos: ${missingPermissions.join(', ')}`)
 			return
 		}
 	}
@@ -66,26 +69,30 @@ client.on('messageCreate', async message => {
 		const missingPermissions = command.permissions.filter(permission => !channelPermissions.has(permission))
 
 		if (missingPermissions.length !== 0) {
-			message.channel.send(`Te faltan permisos: ${missingPermissions.join(', ')}`)
+			message.reply(`Te faltan permisos: ${missingPermissions.join(', ')}`)
 			return
 		}
 	}
 
 	if (command.args) {
+		if (command.args[0].rest && !args.length) {
+			message.reply(`Falta un argumento!`)
+			return
+		}
 		for (const i in command.args) {
 			const arg = command.args[i]
 			if (arg.required && !args[i]) {
-				message.channel.send(`Faltan ${command.args.length - args.length} argumentos`)
+				message.reply(`Faltan ${command.args.length - args.length} argumentos!`)
 				return
 			}
 			if (arg.value) {
 				if (arg.value instanceof RegExp) {
 					if (!arg.value.test(args[i])) {
-						message.channel.send(arg.error ?? `El argumento nro ${i + 1} debe seguir el siguiente patrón: ${arg.value.toString()}`)
+						message.reply(arg.error ?? `El argumento nro ${i + 1} debe seguir el siguiente patrón: ${arg.value.toString()}`)
 						return
 					}
 				} else if (![undefined].concat(arg.value).includes(args[i])) {
-					message.channel.send(arg.error ?? `El argumento nro ${i + 1} debe ser uno de los siguientes valores: ${arg.value.join(', ')}`)
+					message.reply(arg.error ?? `El argumento nro ${i + 1} debe ser uno de los siguientes valores: ${arg.value.join(', ')}`)
 					return
 				}
 			}
@@ -103,7 +110,8 @@ client.on('messageCreate', async message => {
 		commandList,
 		Embed,
 		utility,
-		saveFile
+		saveFile,
+		uptime
 	})
 })
 
@@ -218,6 +226,7 @@ class Embed extends EmbedBuilder {
 	}
 }
 
-const { token } = require('./secrets.json')
+function avoid() {}
 
+const { token } = require('./secrets.json')
 client.login(token)

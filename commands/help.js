@@ -32,13 +32,17 @@ module.exports = {
 
 function argsToString(args) {
 	return args.map(arg => {
-		const result = arg.value
-			? `${arg.name}:${
-					arg.value instanceof RegExp
-						? arg.value.toString()
-						: arg.value.join('|')
-				}`
-			: arg.name
+		let result = arg.name
+		if (args.rest) {
+			result = `...${result}`
+		}
+		if (arg.value) {
+			if (arg.value instanceof RegExp) {
+				result += `:${arg.value.toString()}`
+			} else {
+				result += `:${arg.value.join('|')}`
+			}
+		}
 		return arg.required ? `<${result}>` : `[${result}]`
 	}).join(' ')
 }

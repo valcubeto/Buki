@@ -27,7 +27,7 @@ module.exports = {
 			const { playerInfo, avatarInfoList = [] } = await data.json()
 			if (!playerInfo) {
 				embed.setColor(0xFF5050)
-				embed.setDescription('Usuario no encontrado')
+				embed.setDescription('No se encontró el usuario!')
 				sent.edit({ embeds: [embed] })
 				return
 			}
@@ -40,17 +40,7 @@ module.exports = {
 				`**Firma**: ${escapeMarkdown(playerInfo.signature ?? '_No establecida_')}`,
 				`**Abismo**: ${playerInfo.towerFloorIndex ?? 0}-${playerInfo.towerLevelIndex ?? 0}`,
 				`**Logros**: ${playerInfo.finishAchievementNum ?? 0}`,
-				`**Personajes mostrados**: ${avatarInfoList.length}`,
-				'',
-				...avatarInfoList.map(avatarInfo => {
-					const weaponName = locales.es[avatarInfo.equipList.find(equipment => equipment.weapon).flat.nameTextMapHash]
-					const name = locales.es[characters[avatarInfo.avatarId].nameTextHashMap]
-					return [
-						`**Personaje**: ${name}`,
-						`**Arma**: ${weaponName}`,
-						''
-					].join('\n')
-				})
+				`**Personajes mostrados**: ${avatarInfoList.map(avatarInfo => locales.es[characters[avatarInfo.avatarId].nameTextHashMap]).join(', ')}`
 			)
 			sent.edit({ embeds: [embed] })
 		} catch (error) {
