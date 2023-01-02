@@ -13,8 +13,7 @@ const client = new Client({
 const uptime = Date.now()
 
 client.on('ready', () => {
-	const date = new Date(uptime)
-	console.log(`Client ready! Logged in as ${client.user.tag} after ${date.getSeconds()}.${date.getMilliseconds().toString().padStart(3, '0')} seconds`)
+	console.log(`Client ready! Logged in as ${client.user.tag} after ${(Date.now() - uptime) / 1000} seconds`)
 })
 
 client.on('messageCreate', async message => {

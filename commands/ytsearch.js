@@ -29,8 +29,8 @@ module.exports = {
 			)
 		} catch (error) {
 			embed.setDescription('Algo salió mal')
-			console.error({ command: this.name, error })
-		}
+			console.error({ command: 'ytsearch', error })
+		}	
 		sent.edit({ embeds: [embed] })
 	}
 }
