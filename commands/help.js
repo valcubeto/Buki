@@ -6,7 +6,7 @@ module.exports = {
 			name: 'command'
 		}
 	],
-	command: ({ message, commandList, configuration: { guild = {} }, args: [commandName], prefix, Embed, utility: { join } }) => {
+	command: ({ message, commandList, configuration: { guild = {} }, args: [commandName], prefix, utility: { Embed, join } }) => {
 		if (!commandName) {
 			//
 		} else {	

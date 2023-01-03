@@ -1,4 +1,4 @@
-const { Client, IntentsBitField: { Flags }, EmbedBuilder } = require('discord.js')
+const { Client, IntentsBitField: { Flags }, version } = require('discord.js')
 
 const client = new Client({
 	intents: [
@@ -13,7 +13,9 @@ const client = new Client({
 const uptime = Date.now()
 
 client.on('ready', () => {
-	console.log(`Client ready! Logged in as ${client.user.tag} after ${(Date.now() - uptime) / 1000} seconds`)
+	console.log(`Client ready!`)
+	console.log(`Logged in as ${client.user.tag} after ${(Date.now() - uptime) / 1000} seconds`)
+	console.log(`discord.js v${version}`)
 })
 
 client.on('messageCreate', async message => {
@@ -25,7 +27,9 @@ client.on('messageCreate', async message => {
 
 	// Ignore messages that doesn't starts with the guild's prefix or the messages that starts with it but there is no command (e.g. '!')
 	const prefixAtStart = new RegExp(`^${utility.escapeRegExp(prefix)}\\s*(?=[^\\s])`, 'i')
-	if (!prefixAtStart.test(message.content)) return
+	// Ignore messages with the prefix repeated (e.g. '!!!')
+	const repeatedPrefix = new RegExp(`^(?:${utility.escapeRegExp(prefix)}){2,}`)
+	if (!prefixAtStart.test(message.content) || repeatedPrefix.test(message.content)) return
 
 	// Split the message by words
 	const args = message.content.replace(prefixAtStart, '').trim().split(/\s+/)
@@ -107,7 +111,6 @@ client.on('messageCreate', async message => {
 		client,
 		configuration,
 		commandList,
-		Embed,
 		utility,
 		saveFile,
 		uptime
@@ -161,14 +164,13 @@ watch('./commands', (type, file) => {
 			// Ignore if there are no changes
 			if (equals) return
 
-			console.log(`Updated ${file} (${command.name}) at ${utility.formatDate(now)}`)
+			console.log(`Updated ${file} (.${command.name}) at ${utility.formatDate(now)}`)
 
 			commandLoadTimes[command.name] = now
 			globalCommandList[command.name] = command
 		} catch (error) {
 			// Prevent load files with errors
-			console.log(`Error while importing ${file}`)
-			console.error(error.toString())
+			console.log(`Error while importing ${file}: ${error.message}`)
 		}
 	}
 })
@@ -203,25 +205,6 @@ class CommandList {
 	execute(commandName, data) {
 		const { command } = this.get(commandName)
 		command(data)
-	}
-}
-
-class Embed extends EmbedBuilder {
-	constructor(options) {
-		super({
-			color: 0x5050FF,
-			description: 'Something went wrong',
-			...options,
-			author: options.message
-				? {
-						name: `${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
-						icon_url: options.message.author.displayAvatarURL()
-					}
-				: null
-		})
-	}
-	setDescription(...lines) {
-		EmbedBuilder.prototype.setDescription.call(this, lines.join('\n'))
 	}
 }
 

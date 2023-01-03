@@ -1,3 +1,38 @@
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js')
+
+class Embed extends EmbedBuilder {
+	constructor(options) {
+		super({
+			color: 0x5050FF,
+			description: 'Something went wrong',
+			...options,
+			author: options.message
+				? {
+						name: `${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
+						icon_url: options.message.author.displayAvatarURL()
+					}
+				: null
+		})
+	}
+	setDescription(...lines) {
+		EmbedBuilder.prototype.setDescription.call(this, lines.join('\n'))
+	}
+}
+
+class Button extends ButtonBuilder {
+	constructor(unique, label, options = {}) {
+		super({
+			[options.style === ButtonStyle.Link ? 'url' : 'customId']: unique,
+			label,
+			...options
+		})
+	}
+}
+
+function Row(...components) {
+	return [new ActionRowBuilder({ components }), components.map(component => component.customId)]
+}
+
 const latinWord = /^[a-záéíóúýäëïöüÿñ]+$/i
 
 /**
@@ -73,6 +108,9 @@ function formatDate(time) {
 }
 
 module.exports = {
+	Embed,
+	Button,
+	Row,
 	join,
 	escapeRegExp,
 	equals,

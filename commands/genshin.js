@@ -14,7 +14,7 @@ module.exports = {
 			error: 'UID inválida'
 		}
 	],
-	command: async ({ message, args: [uid], Embed }) => {
+	command: async ({ message, args: [uid], utility: { Embed } }) => {
 		const embed = new Embed({
 			message,
 			title: 'API de Genshin Impact',
