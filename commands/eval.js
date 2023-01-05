@@ -1,4 +1,5 @@
 const discord = require('discord.js')
+const utility = require('../utility')
 
 module.exports = {
 	name: 'eval',
@@ -10,19 +11,27 @@ module.exports = {
 		}
 	],
 	command: (data) => {
-		const code = args.join(' ')
+		if (data.message.author.id !== '826610017490305028') return
+
+		function sendResult(result) {
+			const final = '```js\n' + utility.represent(result) + '\n```'
+			data.message.channel.send(final)
+		}
+
 		try {
-			data.message.channel.send('```json\n' + JSON.stringify(eval(code), null, 2) + '```')
+			const code = `
+				try {
+					(async function () {
+						${data.content}
+					})()
+				} catch (error) {
+					error
+				}
+			`
+			const result = eval(code)
+			sendResult(result)
 		} catch (error) {
-			// yo
-			const content = JSON.stringify(
-				error && error instanceof Error
-					? { name: error.name, message: error.message }
-					: error,
-				null,
-				2
-			)
-			data.message.channel.send('```json\n' + `${error == null ? error : error.constructor.name} ${content}` + '```')
+			sendResult(error)
 		}
 	}
 }

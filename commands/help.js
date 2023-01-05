@@ -1,3 +1,5 @@
+const { Embed, join } = require('../utility')
+
 module.exports = {
 	name: 'help',
 	description: 'Sends help about a command or the list of commands if no arguments provided',
@@ -6,7 +8,7 @@ module.exports = {
 			name: 'command'
 		}
 	],
-	command: ({ message, commandList, configuration: { guild = {} }, args: [commandName], prefix, utility: { Embed, join } }) => {
+	command: ({ message, commandList, configuration: { guild = {} }, args: [commandName], prefix }) => {
 		if (!commandName) {
 			//
 		} else {	

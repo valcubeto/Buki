@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'ping',
 	description: 'Sends the current ping in milliseconds',
-	command: async ({ message, client, Embed }) => {
+	command: async ({ message, client, utility: { Embed } }) => {
 		const embed = new Embed({
 			message,
 			title: 'Pong!',

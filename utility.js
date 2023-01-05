@@ -29,8 +29,19 @@ class Button extends ButtonBuilder {
 	}
 }
 
-function Row(...components) {
-	return [new ActionRowBuilder({ components }), components.map(component => component.customId)]
+/** @typedef {Partial<import('discord.js').ActionRowData<import('discord.js').ActionRowComponentData | import('discord.js').JSONEncodable<import('discord.js').APIActionRowComponentTypes>> | import('discord.js').APIActionRowComponent>} Component */
+
+class Row extends ActionRowBuilder {
+	componentIds = []
+	/** @param {...Component} components */
+	constructor(...components) {
+		super({ components })
+		this.componentIds.concat(components.map(component => component.customId))
+	}
+	addComponents(...components) {
+		ActionRowBuilder.prototype.addComponents.call(this, ...components)
+		this.componentIds.concat(components.map(component => component.customId))
+	}
 }
 
 const latinWord = /^[a-záéíóúýäëïöüÿñ]+$/i
@@ -84,11 +95,16 @@ function equals(value, other) {
 }
 
 /**
- * Formats the date using the YYYY-MM-DD HH:MM:ss.mmm format
+ * Formats the date using the YYYY-MM-DD hh:mm:ss.SSS format
  * @param {Date | number} time
+ * @returns {string}
  */
 function formatDate(time) {
-	const date = typeof time === 'number' ? new Date(time) : time
+	const date = time == null
+		? new Date()
+		: typeof time === 'number'
+			? new Date(time)
+			: time
 
 	return [
 		date.getFullYear(),
@@ -107,6 +123,32 @@ function formatDate(time) {
 	].join('')
 }
 
+/**
+ * Returns a string representation of the value
+ * @param {any} value
+ * @returns {string}
+ */
+function represent(value) {
+	if (value == null || typeof value === 'number' || typeof value === 'boolean') return `${value}`
+	if (typeof value === 'bigint') return `${value}n`
+	if (typeof value === 'symbol') return `Symbol ${JSON.stringify({ description: value.description })}`
+	if (typeof value === 'string') return (value.includes(`'`) ? `"${value.replace(/'/g, `\\'`)}"` : `'${value}'`).replace(/\n/g, '\\n')
+	if (typeof value === 'function') return `[Function ${value.name}]`
+	if (typeof value === 'object') {
+		const realObject = {}
+		for (const key of [].concat(Object.keys(value), Object.getOwnPropertyNames(value))) {
+			if (key === 'constructor') continue
+			try {
+				realObject[key] = realObject === value[key] ? 'this' : value[key]
+			} catch (error) {
+				continue
+			}
+		}
+		return `${value.constructor.name} ${JSON.stringify(realObject, (k, v) => k === '' ? v : represent(v), 2)}`
+	}
+	return `unknown ${value}`
+}
+
 module.exports = {
 	Embed,
 	Button,
@@ -114,5 +156,6 @@ module.exports = {
 	join,
 	escapeRegExp,
 	equals,
-	formatDate
+	formatDate,
+	represent
 }

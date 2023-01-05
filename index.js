@@ -26,9 +26,9 @@ client.on('messageCreate', async message => {
 	const prefix = configuration.guild.prefix ?? '.'
 
 	// Ignore messages that doesn't starts with the guild's prefix or the messages that starts with it but there is no command (e.g. '!')
-	const prefixAtStart = new RegExp(`^${utility.escapeRegExp(prefix)}\\s*(?=[^\\s])`, 'i')
+	const prefixAtStart = new RegExp(`^${escapeRegExp(prefix)}\\s*(?=[^\\s])`, 'i')
 	// Ignore messages with the prefix repeated (e.g. '!!!')
-	const repeatedPrefix = new RegExp(`^(?:${utility.escapeRegExp(prefix)}){2,}`)
+	const repeatedPrefix = new RegExp(`^(?:${escapeRegExp(prefix)}){2,}`)
 	if (!prefixAtStart.test(message.content) || repeatedPrefix.test(message.content)) return
 
 	// Split the message by words
@@ -36,6 +36,10 @@ client.on('messageCreate', async message => {
 
 	// Removes the first element from the argument list and returns it. If there is only the command, the list will be empty
 	const usedCommand = args.shift().toLowerCase()
+
+	const prefixAndCommand = new RegExp(`^${prefix}\s*${usedCommand}\s*`, 'i')
+
+	const content = message.content.replace(prefixAndCommand, '')
 
 	const commandList = new CommandList(message.inGuild() ? configuration.guild : null)
 
@@ -108,16 +112,16 @@ client.on('messageCreate', async message => {
 		prefix,
 		usedCommand,
 		args,
+		content,
 		client,
 		configuration,
 		commandList,
-		utility,
 		saveFile,
 		uptime
 	})
 })
 
-const utility = require('./utility.js')
+const { equals, escapeRegExp, formatDate } = require('./utility.js')
 
 const GUILD_CONFIGS_PATH = './data/guild-configs.json'
 const USER_CONFIGS_PATH = './data/user-configs.json'
@@ -152,6 +156,7 @@ watch('./commands', (type, file) => {
 
 		// Ignore if was saved less than 2 seconds ago
 		if (now - commandLoadTimes[file] < 2000) return
+		commandLoadTimes[file] = now
 
 		try {
 			// Remove the file path from the cache
@@ -160,14 +165,13 @@ watch('./commands', (type, file) => {
 			// Reload the file
 			const command = require(path)
 
-			const equals = utility.equals(globalCommandList[command.name], command)
+			const eq = equals(globalCommandList[command.name], command)
 			// Ignore if there are no changes
-			if (equals) return
+			if (eq) return
 
-			console.log(`Updated ${file} (.${command.name}) at ${utility.formatDate(now)}`)
-
-			commandLoadTimes[command.name] = now
 			globalCommandList[command.name] = command
+
+			console.log(`Updated ${file} (.${command.name}) at ${formatDate(now)}`)
 		} catch (error) {
 			// Prevent load files with errors
 			console.log(`Error while importing ${file}: ${error.message}`)
