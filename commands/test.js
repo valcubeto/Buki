@@ -1,11 +1,12 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ButtonBuilder } = require('discord.js')
+const { formatDate } = require('../utility')
 
 module.exports = {
 	name: 'test',
 	/**
 	 * @param {{ message: import('discord.js').Message }} param0
 	 */
-	command: ({ message, uptime, utility: { formatDate } }) => {
+	command: ({ message, uptime }) => {
 		const avatar = message.author.displayAvatarURL({ size: 256 })
 		message.channel.send({
 			tts: true,

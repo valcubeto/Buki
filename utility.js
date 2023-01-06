@@ -6,9 +6,9 @@ class Embed extends EmbedBuilder {
 			color: 0x5050FF,
 			description: 'Something went wrong',
 			...options,
-			author: options.message
+			footer: options.message
 				? {
-						name: `${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
+						text: `» ${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
 						icon_url: options.message.author.displayAvatarURL()
 					}
 				: null
@@ -20,11 +20,19 @@ class Embed extends EmbedBuilder {
 }
 
 class Button extends ButtonBuilder {
+	/**
+	 * @param {string} unique the customId or url
+	 * @param {string} label the label
+	 * @param {Partial<import('discord.js').ButtonComponentData> | Partial<import('discord.js').APIButtonComponent> | undefined | null} options the options passed to the ButtonBuilder constructor
+	 */
 	constructor(unique, label, options = {}) {
+		if (typeof unique !== 'string' || typeof label !== 'string') throw new TypeError('[class Button] param unique and label must be strings')
+		if (typeof options !== 'object') throw new TypeError('[class Button] param options must be an object or undefined/null')
 		super({
 			[options.style === ButtonStyle.Link ? 'url' : 'customId']: unique,
 			label,
-			...options
+			style: ButtonStyle.Primary,
+			...options // can spread null?
 		})
 	}
 }
@@ -38,9 +46,15 @@ class Row extends ActionRowBuilder {
 		super({ components })
 		this.componentIds.concat(components.map(component => component.customId))
 	}
+	/** @param {...Component} components */
 	addComponents(...components) {
 		ActionRowBuilder.prototype.addComponents.call(this, ...components)
 		this.componentIds.concat(components.map(component => component.customId))
+	}
+	/** @param {...Component} components */
+	setComponents(...components) {
+		ActionRowBuilder.prototype.setComponents.call(this, ...components)
+		this.componentIds = components.map(component => component.customId)
 	}
 }
 
@@ -149,6 +163,30 @@ function represent(value) {
 	return `unknown ${value}`
 }
 
+/**
+ * Creates a table representation of the object
+ * @param {{ [key: string]: any }} object
+ * @returns {string}
+ */
+function table(object) {
+	const keys = Object.keys(object)
+	const values = Object.values(object).map(value => `${value}`)
+	const maxKeyLength = Math.max(...keys.map(key => key.length))
+	const maxValueLength = Math.max(...values.map(value => value.length))
+	return [
+		`┌─${''.padEnd(maxKeyLength, '─')}─┬─${''.padEnd(maxValueLength, '─')}─┐`,
+		...keys.map((key, i) => `│ ${key.padEnd(maxKeyLength, ' ')} │ ${values[i].padEnd(maxValueLength, ' ')} │`),
+		`└─${''.padEnd(maxKeyLength, '─')}─┴─${''.padEnd(maxValueLength, '─')}─┘`
+	].join('\n')
+}
+
+/*
+  ┌ ─ ┬ ┐
+  │     │
+  ├   ┼ ┤
+  └ ─ ┴ ┘
+*/
+
 module.exports = {
 	Embed,
 	Button,
@@ -157,5 +195,6 @@ module.exports = {
 	escapeRegExp,
 	equals,
 	formatDate,
-	represent
+	represent,
+	table
 }

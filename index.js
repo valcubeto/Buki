@@ -1,4 +1,4 @@
-const { Client, IntentsBitField: { Flags }, version } = require('discord.js')
+const { Client, IntentsBitField: { Flags } } = require('discord.js')
 
 const client = new Client({
 	intents: [
@@ -13,9 +13,8 @@ const client = new Client({
 const uptime = Date.now()
 
 client.on('ready', () => {
-	console.log(`Client ready!`)
-	console.log(`Logged in as ${client.user.tag} after ${(Date.now() - uptime) / 1000} seconds`)
-	console.log(`discord.js v${version}`)
+	const seconds = (Date.now() - uptime) / 1000
+	console.log(`Client ready! Logged in as ${client.user.tag} after ${seconds} seconds`)
 })
 
 client.on('messageCreate', async message => {

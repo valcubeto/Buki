@@ -1,5 +1,6 @@
 const { youtubeSearch } = require('@bochilteam/scraper')
-const { ButtonBuilder, ButtonComponent, ActionRowBuilder } = require('discord.js')
+const { ButtonStyle, escapeMarkdown } = require('discord.js')
+const { Embed, Button, Row } = require('../utility')
 
 module.exports = {
 	name: 'ytsearch',
@@ -12,41 +13,65 @@ module.exports = {
 		}
 	],
 	/** @param {{ message: import('discord.js').Message }} param0 */
-	command: async ({ message, args, utility: { Embed, Button, Row } }) => {
+	command: async ({ message, args }) => {
 		const search = args.join(' ')
 		const embed = new Embed({
-			title: 'Búsqueda en YouTube',
+			title: `Búsqueda en YouTube: ${search}`,
 			description: 'Cargando...'
 		})
 
 		const sent = await message.channel.send({ embeds: [embed] })
 
-		const previous = new Button('previous', 'Anterior')
-		const index = new Button('index', '...')
-		const next = new Button('next', 'Siguiente')
-
-		const [row, rowIds] = Row(previous, index, next)
-
 		try {
-			const { video: videos } = await youtubeSearch(search)
-			let i = 0
-			function filter(...args) {
-				const result = videos.at(i)
-				embed.setImage(result.thumbnail)
-				embed.setDescription(
-					`**Título**: ${result.title}`,
-					`**Descripción**: ${result.description}`
-				)
-				sent.edit({ embeds: [embed], components: [row] })
-				console.log({ args })
+			const { video: videos = [] } = await youtubeSearch(search)
+
+			if (!videos.length) {
+				embed.setDescription('No hay resultados')
+				sent.edit({ embeds: [embed] })
+				return
 			}
 
-			const collector = sent.createMessageComponentCollector({ filter, time: 20_000 })
-			setTimeout(collector.stop, 20_000)
+			const previous = new Button('previous', 'Anterior', { disabled: true })
+			const index = new Button('index', `1/${videos.length}`, { style: ButtonStyle.Secondary, disabled: true })
+			const next = new Button('next', 'Siguiente')
+			const row = new Row(previous, index, next)
+
+			function update(result) {
+				embed.setImage(result.thumbnail)
+				embed.setDescription(
+					`**Título**: ${escapeMarkdown(result.title)}`,
+					`**Descripción**: ${escapeMarkdown(result.description) || '_Sin descripción_'}`,
+					`**Publicado por**: ${escapeMarkdown(result.authorName)}`,
+					`**Duración**: ${result.duration}`,
+					...(result.publishedTime ? [`**Fecha de publicación**: ${result.publishedTime}`] : []) // prevent empty lines
+				)
+			}
+
+			update(videos.at(0))
+			await sent.edit({ embeds: [embed], components: [row] })
+
+			let i = 0
+			const collector = sent.createMessageComponentCollector({ filter: interaction => interaction.user.id === message.author.id, time: 60_000 })
+			collector.on('collect', interaction => {
+				if (interaction.component.customId === 'previous') i--
+				if (interaction.component.customId === 'next') i++
+
+				previous.setDisabled(i === 0)
+				index.setLabel(`${i + 1}/${videos.length}`)
+				next.setDisabled(i === videos.length)
+
+				update(videos.at(i))
+				interaction.update({ embeds: [embed], components: [row] })
+			})
+			collector.on('end', () => {
+				previous.setDisabled(true)
+				next.setDisabled(true)
+				sent.edit({ embeds: [embed], components: [row] })
+			})
 		} catch (error) {
-			embed.setDescription('Algo salió mal')
-			console.error({ command: 'ytsearch' }, error)
+			embed.setDescription('Algo salió mal. Inténtalo de nuevo más tarde')
 			sent.edit({ embeds: [embed] })
+			console.error({ command: 'ytsearch' }, error)
 		}	
 	}
 }
