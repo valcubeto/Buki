@@ -7,6 +7,7 @@ const apiURL = 'https://enka.network'
 module.exports = {
 	locales,
 	costumes,
+	/**	@type {import('./characters').Characters} */
 	characters,
 	namecards,
 	apiURL

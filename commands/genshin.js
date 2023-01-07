@@ -1,8 +1,12 @@
 const { escapeMarkdown } = require('discord.js')
-const { apiURL, characters, locales } = require('../genshin-api/index')
-const { Embed, Row } = require('../utility')
-
-/** @typedef {import('../genshin-api/genshin-impact-account').GenshinImpactAccount} GenshinImpactAccount */
+const {
+	apiURL,
+	/**	@type {import('../genshin-api/characters.d.ts').Characters} */
+	characters,
+	locales
+} = require('../genshin-api/index')
+const { Embed, Row, Button } = require('../utility')
+const { createCanvas, loadImage } = require('canvas')
 
 module.exports = {
 	name: 'genshin',
@@ -25,7 +29,7 @@ module.exports = {
 		const sent = await message.channel.send({ embeds: [embed] })
 		try {
 			const data = await fetch(`${apiURL}/u/${uid}/__data.json`)
-			/** @type {GenshinImpactAccount} */
+			/** @type {import('../genshin-api/genshin-impact-account').GenshinImpactAccount} */
 			const { playerInfo, avatarInfoList = [] } = await data.json()
 			if (!playerInfo) {
 				embed.setColor(0xFF5050)
@@ -50,12 +54,47 @@ module.exports = {
 			/** @type {import('discord.js').ActionRowBuilder[]} */
 			const rows = []
 			if (avatarInfoList.length) {
+				const firstRow = new Row()
+				const secondRow = new Row()
 				for (let i = 0; i < avatarInfoList.length; i++) {
-					const avatarInfo = avatarInfoList[i]
-					if (i === 4) { }
+					(i < 4 ? firstRow : secondRow).addComponents(
+						new Button(
+							`${i}`,
+							locales.es[characters[avatarInfoList.at(i).avatarId].nameTextHashMap]
+						)
+					)
+				}
+				if (firstRow.components.length) {
+					rows.push(firstRow)
+					if (secondRow.components.length) {
+						rows.push(secondRow)
+					}
 				}
 			}
 			sent.edit({ embeds: [embed], components: rows.length ? rows : undefined })
+			if (rows.length) {
+				const collector = sent.createMessageComponentCollector({ filter: interaction => interaction.user.id === message.author.id, time: 30_000 })
+				collector.on('collect', interaction => {
+					rows.forEach(row => row.components.forEach(component => {
+						component.setDisabled(component.data.custom_id === interaction.component.customId)
+					}))
+					const avatarInfo = avatarInfoList[interaction.component.customId]
+					const character = characters[avatarInfo.avatarId]
+					const artifacts = avatarInfo.equipList ?? []
+					const weapon = artifacts.pop() ?? {}
+					embed.setDescription(
+						`**Personaje**: ${locales.es[character.nameTextHashMap]} C${avatarInfo.talentIdList?.length ?? 0}`,
+						`**Arma**: ${locales.es[weapon.flat.nameTextMapHash]} R${(weapon.weapon?.promoteLevel ?? 2) - 1} al ${weapon.weapon?.level}`
+					)
+					embed.setThumbnail(`${apiURL}/ui/${character.iconName}.png`)
+					embed.setImage(`${apiURL}/ui/${character.art}.png`)
+					interaction.update({ embeds: [embed], components: rows })
+				})
+				collector.on('end', () => {
+					rows.forEach(row => row.components.forEach(component => component.setDisabled(true)))
+					sent.edit({ embeds: [embed], components: rows })
+				})
+			}
 		} catch (error) {
 			embed.setColor(0xFF5050)
 			embed.setDescription('Algo salió mal!')
@@ -63,4 +102,11 @@ module.exports = {
 			console.log({ error })
 		}
 	}
+}
+
+function makeButton(avatarInfo, i) {
+	const customId = `${i}`
+	const label = locales.es[characters[avatarInfo.avatarId].nameTextHashMap]
+	console.log({ customId, label })
+	return new Button(customId, label)
 }

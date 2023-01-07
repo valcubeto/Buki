@@ -61,13 +61,13 @@
 		"costumes": {
 			"200301": {
 				"sideIconName": "UI_AvatarIcon_side_QinCostumeSea",
-				"icon": "UI_AvatarIcon_QinCostumeSea",
+				"iconName": "UI_AvatarIcon_QinCostumeSea",
 				"art": "UI_Costume_QinCostumeSea",
 				"avatarId": "10000003"
 			},
 			"200302": {
 				"sideIconName": "UI_AvatarIcon_side_QinCostumeWic",
-				"icon": "UI_AvatarIcon_QinCostumeWic",
+				"iconName": "UI_AvatarIcon_QinCostumeWic",
 				"art": "UI_Costume_QinCostumeWic",
 				"avatarId": "10000003"
 			}
@@ -195,7 +195,7 @@
 		"costumes": {
 			"201401": {
 				"sideIconName": "UI_AvatarIcon_side_BarbaraCostumeSummertime",
-				"icon": "UI_AvatarIcon_BarbaraCostumeSummertime",
+				"iconName": "UI_AvatarIcon_BarbaraCostumeSummertime",
 				"art": "UI_Costume_BarbaraCostumeSummertime",
 				"avatarId": 10000014
 			}
@@ -263,7 +263,7 @@
 		"costumes": {
 			"201601": {
 				"sideIconName": "UI_AvatarIcon_side_DilucCostumeFlamme",
-				"icon": "UI_AvatarIcon_DilucCostumeFlamme",
+				"iconName": "UI_AvatarIcon_DilucCostumeFlamme",
 				"art": "UI_Costume_DilucCostumeFlamme",
 				"avatarId": 10000016
 			}
@@ -331,7 +331,7 @@
 		"costumes": {
 			"202101": {
 				"sideIconName": "UI_AvatarIcon_side_AmborCostumeWic",
-				"icon": "UI_AvatarIcon_AmborCostumeWic",
+				"iconName": "UI_AvatarIcon_AmborCostumeWic",
 				"art": "UI_Costume_AmborCostumeWic",
 				"avatarId": 10000021
 			}
@@ -519,7 +519,7 @@
 		"costumes": {
 			"202701": {
 				"sideIconName": "UI_AvatarIcon_side_NingguangCostumeFloral",
-				"icon": "UI_AvatarIcon_NingguangCostumeFloral",
+				"iconName": "UI_AvatarIcon_NingguangCostumeFloral",
 				"art": "UI_Costume_NingguangCostumeFloral",
 				"avatarId": 10000027
 			}
@@ -617,7 +617,7 @@
 		"costumes": {
 			"203101": {
 				"sideIconName": "UI_AvatarIcon_side_FischlCostumeHighness",
-				"icon": "UI_AvatarIcon_FischlCostumeHighness",
+				"iconName": "UI_AvatarIcon_FischlCostumeHighness",
 				"art": "UI_Costume_FischlCostumeHighness",
 				"avatarId": 10000031
 			}
@@ -895,7 +895,7 @@
 		"costumes": {
 			"204101": {
 				"sideIconName": "UI_AvatarIcon_side_MonaCostumeWic",
-				"icon": "UI_AvatarIcon_MonaCostumeWic",
+				"iconName": "UI_AvatarIcon_MonaCostumeWic",
 				"art": "UI_Costume_MonaCostumeWic",
 				"avatarId": 10000041
 			}
@@ -933,7 +933,7 @@
 		"costumes": {
 			"204201": {
 				"sideIconName": "UI_AvatarIcon_side_KeqingCostumeFeather",
-				"icon": "UI_AvatarIcon_KeqingCostumeFeather",
+				"iconName": "UI_AvatarIcon_KeqingCostumeFeather",
 				"art": "UI_Costume_KeqingCostumeFeather",
 				"avatarId": 10000042
 			}
@@ -1031,7 +1031,7 @@
 		"costumes": {
 			"204501": {
 				"sideIconName": "UI_AvatarIcon_side_RosariaCostumeWic",
-				"icon": "UI_AvatarIcon_RosariaCostumeWic",
+				"iconName": "UI_AvatarIcon_RosariaCostumeWic",
 				"art": "UI_Costume_RosariaCostumeWic",
 				"avatarId": 10000045
 			}

@@ -1,10 +1,12 @@
+type Identifier = `${number}`
+
 interface ShowAvatarInfo {
-	avatarId: number
+	avatarId: Identifier
 	level: number
 }
 
 interface Stat {
-	appendPropId: string
+	appendPropId: Identifier
 	statValue: number
 }
 
@@ -36,16 +38,19 @@ interface Weapon {
 		weaponStats: Stat[]
 	}
 	itemId: number
-	weapon: {
-		affixMap: Object<number, number>
+	weapon?: {
+		affixMap: {
+			[id: Identifier]: number
+		}
 		level: number
-		promoteLevel: number
+		promoteLevel?: number
 	}
 }
 
 interface AvatarInfo {
-	avatarId: number
+	avatarId: Identifier
 	equipList: (Artifact | Weapon)[]
+	talentIdList: number[],
 	fetterInfo: {
 		expLevel: number
 	}
@@ -53,18 +58,21 @@ interface AvatarInfo {
 		[number]: number
 	}
 	propMap: {
-		[number]: {
+		[id: Identifier]: {
 			type: number
-			ival: number
+			/** @deprecated ignore */ ival: number
 			val?: number
 		}
 		skillDepotId: number
-		skillLevelMap: Object<number, number>
+		skillLevelMap: {
+			[id: Identifier]: number
+		}
 	}
 	inherentProudSkillList: number[]
 }
 
 export interface GenshinImpactAccount {
+	/** if there is no uid means that the user hasn't unlocked the co-op mode */
 	uid?: string
 	ttl: number
 	playerInfo: {
@@ -72,9 +80,9 @@ export interface GenshinImpactAccount {
 		signature?: string
 		level: number
 		profilePicture: {
-			avatarId: number
+			avatarId: Identifier
 		},
-		nameCardId: number
+		nameCardId: Identifier
 		worldLevel?: number
 		showAvatarInfoList?: ShowAvatarInfo[]
 		showNameCardIdList?: number[]
