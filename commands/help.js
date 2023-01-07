@@ -9,40 +9,43 @@ module.exports = {
 		}
 	],
 	command: ({ message, commandList, configuration: { guild = {} }, args: [commandName], prefix }) => {
-		if (!commandName) {
-			//
-		} else {	
+		if (commandName) {
 			if (!commandList.has(commandName)) {
 				message.channel.send(`El comando ${commandName} no existe qwq`)
 				return
 			}
 
-			const { name, args = [] } = commandList.get(commandName)
+			const { name, args = [], description = '_(Sin descripción)_' } = commandList.get(commandName)
 
-			options.title = join(
-				prefix,
-				commandName,
-				argsToString(args),
-				guild.aliases && commandName in guild.aliases && ` (alias de ${name})` || null
-			)
+			const embed = new Embed({
+				message,
+				title: join(
+					prefix,
+					commandName,
+					' ',
+					argsToString(args),
+					guild.aliases && commandName in guild.aliases ? ` (alias de ${name})` : null
+				),
+				description
+			})
+
+			message.channel.send({ embeds: [embed] })
+			return
 		}
-
-		const embed = new Embed(options)
-		message.channel.send({ embeds: [embed] })
 	}
 }
 
 function argsToString(args) {
 	return args.map(arg => {
 		let result = arg.name
-		if (args.rest) {
-			result = `...${result}`
+		if (arg.rest) {
+			result = `... ${result}`
 		}
 		if (arg.value) {
 			if (arg.value instanceof RegExp) {
-				result += `:${arg.value.toString()}`
+				result += `: ${arg.value.toString()}`
 			} else {
-				result += `:${arg.value.join('|')}`
+				result += `: ${arg.value.join(' | ')}`
 			}
 		}
 		return arg.required ? `<${result}>` : `[${result}]`

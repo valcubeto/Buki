@@ -91,14 +91,14 @@ client.on('messageCreate', async message => {
 				message.reply(`Faltan ${command.args.length - args.length} argumentos!`)
 				return
 			}
-			if (arg.value) {
+			if (arg.value && args[i]) {
 				if (arg.value instanceof RegExp) {
-					if (!arg.value.test(args[i])) {
-						message.reply(arg.error ?? `El argumento nro ${i + 1} debe seguir el siguiente patrón: ${arg.value.toString()}`)
+					if (!arg.value.test(arg.rest ? args.slice(i).join(' ') : args[i])) {
+						message.reply(arg.error ?? `El argumento nro ${parseInt(i) + 1} debe seguir el siguiente patrón: ${arg.value.toString()}`)
 						return
 					}
-				} else if (![undefined].concat(arg.value).includes(args[i])) {
-					message.reply(arg.error ?? `El argumento nro ${i + 1} debe ser uno de los siguientes valores: ${arg.value.join(', ')}`)
+				} else if (![undefined].concat(arg.value).includes(arg.rest ? args.slice(i).join(' ') : args[i])) {
+					message.reply(arg.error ?? `El argumento nro ${parseInt(i) + 1} debe ser uno de los siguientes valores: ${arg.value.join(', ')}`)
 					return
 				}
 			}

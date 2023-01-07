@@ -3,6 +3,18 @@ const { formatDate } = require('../utility')
 
 module.exports = {
 	name: 'test',
+	args: [
+		{
+			name: 'required',
+			required: true,
+			value: ['idk', 'elpepe']
+		},
+		{
+			name: 'optional',
+			value: /some regex/i,
+			rest: true
+		}
+	],
 	/**
 	 * @param {{ message: import('discord.js').Message }} param0
 	 */

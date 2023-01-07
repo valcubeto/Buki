@@ -16,6 +16,7 @@ module.exports = {
 	command: async ({ message, args }) => {
 		const search = args.join(' ')
 		const embed = new Embed({
+			message,
 			title: `Búsqueda en YouTube: ${search}`,
 			description: 'Cargando...'
 		})
@@ -64,6 +65,7 @@ module.exports = {
 				interaction.update({ embeds: [embed], components: [row] })
 			})
 			collector.on('end', () => {
+				embed.setTitle(`(expired) ${embed.data.title}`)
 				previous.setDisabled(true)
 				next.setDisabled(true)
 				sent.edit({ embeds: [embed], components: [row] })
