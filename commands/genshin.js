@@ -37,6 +37,9 @@ module.exports = {
 				sent.edit({ embeds: [embed] })
 				return
 			}
+
+			//const canvas = createCanvas(0, 0)
+
 			embed.setTitle(`Cuenta de ${playerInfo.nickname}`)
 			const { iconName } = characters[playerInfo.profilePicture.avatarId]
 			embed.setThumbnail(`${apiURL}/ui/${iconName}.png`)
