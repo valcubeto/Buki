@@ -1,11 +1,7 @@
 const { escapeMarkdown } = require('discord.js')
-const {
-	apiURL,
-	/**	@type {import('../genshin-api/characters.d.ts').Characters} */
-	characters,
-	locales
-} = require('../genshin-api/index')
 const { Embed, Row, Button } = require('../utility')
+const { apiURL, characters, locales } = require('../genshin-api/index')
+const genshindb = require('genshin-db')
 const { createCanvas, loadImage } = require('canvas')
 
 module.exports = {
@@ -39,6 +35,7 @@ module.exports = {
 			}
 
 			//const canvas = createCanvas(0, 0)
+			// genshindb.characters()
 
 			embed.setTitle(`Cuenta de ${playerInfo.nickname}`)
 			const { iconName } = characters[playerInfo.profilePicture.avatarId]
