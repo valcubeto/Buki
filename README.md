@@ -1,5 +1,5 @@
 # Buki
-Un bot hecho con JavaScript w
+Un bot de Discord hecho con JavaScript
 
 Si vas a robar el código, no olvides que faltan algunos archivos:
 - *secrets.json*, pon tu token ahí.

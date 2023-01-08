@@ -5,12 +5,14 @@
     "discord.js": "^14.7.1",
     "genshin-db": "^4.3.4"
   },
-  "name": "buki",
-  "description": "Un bot hecho con JavaScript w",
+  "type": "commonjs",
+  "name": "buki-bot",
+  "description": "Un bot de Discord hecho con JavaScript",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'test'"
+    "prestart": "cls",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -18,8 +20,8 @@
   },
   "author": "Val Cubeta",
   "license": "ISC",
+  "homepage": "https://github.com/ValCubeta/Buki#readme",
   "bugs": {
     "url": "https://github.com/ValCubeta/Buki/issues"
-  },
-  "homepage": "https://github.com/ValCubeta/Buki#readme"
+  }
 }

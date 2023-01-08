@@ -32,8 +32,10 @@ module.exports = {
 		const sent = await message.channel.send({ embeds: [embed] })
 		try {
 			const data = await fetch(`${apiURL}/u/${uid}/__data.json`)
+
 			/** @type {import('../genshin-api/genshin-impact-account').GenshinImpactAccount} */
 			const { playerInfo, avatarInfoList = [] } = await data.json()
+
 			if (!playerInfo) {
 				embed.setColor(0xFF5050)
 				embed.setDescription('No se encontró el usuario!')
@@ -41,7 +43,7 @@ module.exports = {
 				return
 			}
 
-			//const canvas = createCanvas(0, 0)
+			// const canvas = createCanvas(0, 0)
 			// genshindb.characters()
 
 			embed.setTitle(`Cuenta de ${playerInfo.nickname}`)
