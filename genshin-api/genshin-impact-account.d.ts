@@ -60,7 +60,8 @@ interface AvatarInfo {
 	propMap: {
 		[id: Identifier]: {
 			type: number
-			/** @deprecated ignore */ ival: number
+			/** @deprecated ignore */
+			ival: number
 			val?: number
 		}
 		skillDepotId: number

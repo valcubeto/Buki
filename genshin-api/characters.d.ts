@@ -1,6 +1,6 @@
 type Element = 'Anemo' | 'Geo' | 'Electro' | 'Dendro' | 'Hydro' | 'Pyro' | 'Cryo'
 
-type Identifier = `${number}`
+type Identifier = string | `${number}`
 
 interface Costume {
 	sideIconName: string

@@ -1,4 +1,4 @@
-{
+module.exports = {
 	"10000002": {
 		"element": "Cryo",
 		"constellations": [

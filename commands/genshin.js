@@ -1,7 +1,14 @@
 const { escapeMarkdown } = require('discord.js')
 const { Embed, Row, Button } = require('../utility')
-const { apiURL, characters, locales } = require('../genshin-api/index')
+
+const { apiURL, locales } = require('../genshin-api/index')
+
+// intellisense bug
+/** @type {import('../genshin-api/characters').Characters} */
+const characters = require('../genshin-api/index').characters
+
 const genshindb = require('genshin-db')
+
 const { createCanvas, loadImage } = require('canvas')
 
 module.exports = {
