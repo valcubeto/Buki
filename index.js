@@ -24,11 +24,16 @@ client.on('messageCreate', async message => {
 	const configuration = new Configuration(message)
 	const prefix = configuration.guild.prefix ?? '.'
 
-	// Ignore messages that doesn't starts with the guild's prefix or the messages that starts with it but there is no command (e.g. '!')
+	// Ignore messages that doesn't starts with the guild's prefix or the messages that starts with it but there is no command ('hello', '!')
 	const prefixAtStart = new RegExp(`^${escapeRegExp(prefix)}\\s*(?=[^\\s])`, 'i')
-	// Ignore messages with the prefix repeated (e.g. '!!!')
+
+	// Ignore messages with the prefix repeated ('!!!')
 	const repeatedPrefix = new RegExp(`^(?:${escapeRegExp(prefix)}){2,}`)
-	if (!prefixAtStart.test(message.content) || repeatedPrefix.test(message.content)) return
+
+	if (!prefixAtStart.test(message.content) || repeatedPrefix.test(message.content)) {
+		if (configuration.guild?.words)
+		return
+	}
 
 	// Split the message by words
 	const args = message.content.replace(prefixAtStart, '').trim().split(/\s+/)
@@ -128,14 +133,12 @@ const USER_CONFIGS_PATH = './data/user-configs.json'
 const guildConfigurations = require(GUILD_CONFIGS_PATH)
 const userConfigurations  = require(USER_CONFIGS_PATH)
 
-
 const { readdirSync: readDir, writeFileSync, watch } = require('node:fs')
 
 // will look like { ping: { name: 'ping', command: (...) => ... } }
-/** @type {{ [key: string]: Command }} */
 const globalCommandList = {}
 
-/** @type {Object<string, number>} */
+/** @type {{ [path: string]: number }} */
 const commandLoadTimes = {}
 
 for (const file of readDir('./commands')) {
@@ -184,8 +187,10 @@ function saveFile(path, data) {
 
 class Configuration {
 	constructor(message) {
+		/** @type {{ [id: `${bigint}`]: { prefix?: string, aliases?: { [alias: string]: string }, words?: { [word: string]: number } } }} */
 		this.guild = guildConfigurations[message.guild.id] ?? {}
-		this.user = userConfigurations[message.guild.id] ?? {}
+		/** @type {{ [id: `${bigint}`]: { afk?: number } }} */
+		this.user = userConfigurations[message.author.id] ?? {}
 	}
 	guildConfigurationsPath() {
 		return GUILD_CONFIGS_PATH

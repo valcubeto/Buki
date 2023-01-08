@@ -44,7 +44,7 @@ module.exports = {
 					`**Descripción**: ${escapeMarkdown(result.description) || '_Sin descripción_'}`,
 					`**Publicado por**: ${escapeMarkdown(result.authorName)}`,
 					`**Duración**: ${result.duration}`,
-					...(result.publishedTime ? [`**Fecha de publicación**: ${result.publishedTime}`] : []) // prevent empty lines
+					...(result.publishedTime !== 'Unknown' ? [`**Fecha de publicación**: ${result.publishedTime}`] : []) // prevent empty lines
 				)
 			}
 
@@ -71,7 +71,7 @@ module.exports = {
 				sent.edit({ embeds: [embed], components: [row] })
 			})
 		} catch (error) {
-			embed.setDescription('Algo salió mal. Inténtalo de nuevo más tarde')
+			embed.setDescription('Algo salió mal. Inténtalo de nuevo más tarde.')
 			sent.edit({ embeds: [embed] })
 			console.error({ command: 'ytsearch' }, error)
 		}	
