@@ -1,17 +1,18 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js')
+const { writeFileSync } = require('node:fs')
 
 class Embed extends EmbedBuilder {
 	constructor(options) {
 		super({
 			color: 0x5050FF,
-			description: 'Something went wrong',
+			description: 'description placeholder',
 			...options,
 			footer: options.message
 				? {
 						text: `» ${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
 						icon_url: options.message.author.displayAvatarURL()
 					}
-				: null
+				: options.footer
 		})
 	}
 	setDescription(...lines) {
@@ -37,11 +38,18 @@ class Button extends ButtonBuilder {
 	}
 }
 
-/** @typedef {Partial<import('discord.js').ActionRowData<import('discord.js').ActionRowComponentData | import('discord.js').JSONEncodable<import('discord.js').APIActionRowComponentTypes>> | import('discord.js').APIActionRowComponent>} Component */
+/**
+ * @typedef {import('discord.js').APIButtonComponent} APIButtonComponent
+ * @typedef {import('discord.js').APIActionRowComponent<APIButtonComponent>} APIActionRowComponent
+ */
 
 class Row extends ActionRowBuilder {
+	/** @type {string[]} */
 	componentIds = []
-	/** @param {...Component} components */
+	/**
+	 * ActionRowBuilder<ButtonBuilder>
+	 * @param {...APIActionRowComponent} components
+	 */
 	constructor(...components) {
 		super({ components })
 		this.componentIds.concat(components.map(component => component.customId))
@@ -142,7 +150,7 @@ function formatDate(time) {
  * @param {any} value
  * @returns {string}
  */
-function represent(value) {
+function represent(value, fullStack) {
 	if (value == null || typeof value === 'number' || typeof value === 'boolean') return `${value}`
 	if (typeof value === 'bigint') return `${value}n`
 	if (typeof value === 'symbol') return `Symbol ${JSON.stringify({ description: value.description })}`
@@ -158,7 +166,7 @@ function represent(value) {
 				continue
 			}
 		}
-		return `${value.constructor.name} ${JSON.stringify(realObject, (k, v) => k === '' ? v : represent(v), 2)}`
+		return fullStack ? value.constructor.name : `${value.constructor.name} ${JSON.stringify(realObject, (k, v) => k === '' ? v : represent(v, true), 2)}`
 	}
 	return `unknown ${value}`
 }
@@ -187,6 +195,10 @@ function table(object) {
   └ ─ ┴ ┘
 */
 
+function saveFile(data, path) {
+	writeFileSync(path, JSON.stringify(data, null, 2))
+}
+
 module.exports = {
 	Embed,
 	Button,
@@ -196,5 +208,6 @@ module.exports = {
 	equals,
 	formatDate,
 	represent,
-	table
+	table,
+	saveFile
 }

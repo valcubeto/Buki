@@ -11,3 +11,5 @@ Un bot de Discord hecho con JavaScript
 **No compartas estos archivos con nadie, en especial secrets.json**
 
 > No olvides usar **`npm install`** para instalar todas las librerías necesarias.
+
+**Nota**: no encontré una forma de usar el bot con Bun, pero con Node no debería haber problema

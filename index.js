@@ -31,7 +31,27 @@ client.on('messageCreate', async message => {
 	const repeatedPrefix = new RegExp(`^(?:${escapeRegExp(prefix)}){2,}`)
 
 	if (!prefixAtStart.test(message.content) || repeatedPrefix.test(message.content)) {
-		if (configuration.guild?.words)
+		if (configuration.guild?.words) {
+			const description = []
+			for (const word of message.content.toLowerCase().split(/\s+/)) {
+				if (word in configuration.guild.words) {
+					configuration.guild.words[word]++
+					description.push(`${word}: ${configuration.guild.words[word]}`)
+				}
+			}
+			if (description.length === 0) return
+			saveFile(configuration.guild, configuration.guildConfigurationsPath())
+			const embed = new Embed({
+				message,
+				title: 'Contador de palabras'
+			})
+			embed.setDescription(
+				'```js',
+				...description,
+				'```'
+			)
+			message.channel.send({ embeds: [embed] })
+		}
 		return
 	}
 
@@ -43,7 +63,7 @@ client.on('messageCreate', async message => {
 
 	const prefixAndCommand = new RegExp(`^${prefix}\s*${usedCommand}\s*`, 'i')
 
-	const content = message.content.replace(prefixAndCommand, '')
+	const content = message.content.replace(prefixAndCommand, '').trimStart()
 
 	const commandList = new CommandList(message.inGuild() ? configuration.guild : null)
 
@@ -120,20 +140,21 @@ client.on('messageCreate', async message => {
 		client,
 		configuration,
 		commandList,
-		saveFile,
 		uptime
 	})
 })
 
-const { equals, escapeRegExp, formatDate } = require('./utility.js')
+const { equals, escapeRegExp, formatDate, Embed, saveFile } = require('./utility.js')
 
 const GUILD_CONFIGS_PATH = './data/guild-configs.json'
 const USER_CONFIGS_PATH = './data/user-configs.json'
 
-const guildConfigurations = require(GUILD_CONFIGS_PATH)
-const userConfigurations  = require(USER_CONFIGS_PATH)
+const configurations = {
+	guilds: require(GUILD_CONFIGS_PATH),
+	users: require(USER_CONFIGS_PATH)
+}
 
-const { readdirSync: readDir, writeFileSync, watch } = require('node:fs')
+const { readdirSync: readDir, watch } = require('node:fs')
 
 // will look like { ping: { name: 'ping', command: (...) => ... } }
 const globalCommandList = {}
@@ -181,22 +202,18 @@ watch('./commands', (type, file) => {
 	}
 })
 
-function saveFile(path, data) {
-	writeFileSync(path, JSON.stringify(data, null, 2))
-}
-
 class Configuration {
 	constructor(message) {
-		/** @type {{ [id: `${bigint}`]: { prefix?: string, aliases?: { [alias: string]: string }, words?: { [word: string]: number } } }} */
-		this.guild = guildConfigurations[message.guild.id] ?? {}
-		/** @type {{ [id: `${bigint}`]: { afk?: number } }} */
-		this.user = userConfigurations[message.author.id] ?? {}
-	}
-	guildConfigurationsPath() {
-		return GUILD_CONFIGS_PATH
-	}
-	userConfigurationsPath() {
-		return USER_CONFIGS_PATH
+		/** @type {Partial<{ prefix: string, aliases: { [alias: string]: string }, words: { [word: string]: number } }>} */
+		this.guild = configurations.guilds[message.guild.id] ?? {}
+		this.guild.save = function () {
+			saveFile(configurations.guilds, GUILD_CONFIGS_PATH)
+		}
+		/** @type {Partial<{ afk: number }>} */
+		this.user = configurations.users[message.author.id] ?? {}
+		this.user.save = function () {
+			saveFile(configurations.users, USER_CONFIGS_PATH)
+		}
 	}
 }
 
@@ -220,3 +237,6 @@ function avoid() {}
 
 const { token } = require('./secrets.json')
 client.login(token)
+	.then(() => {
+		console.log(`Logged in as ${client.user.tag}`)
+	})

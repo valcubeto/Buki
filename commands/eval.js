@@ -25,11 +25,12 @@ module.exports = {
 						${data.content}
 					})()
 				} catch (error) {
-					error
+					Promise.reject(error)
 				}
 			`
-			const result = eval(code)
-			sendResult(result)
+			eval(code)
+				.then(sendResult)
+				.catch(sendResult)
 		} catch (error) {
 			sendResult(error)
 		}
