@@ -1,3 +1,5 @@
-node_modules
-data
-secrets.json
+/**/node_modules
+/**/Cargo.toml
+/**/target
+/**/secrets.json
+/**/*-configs.json
