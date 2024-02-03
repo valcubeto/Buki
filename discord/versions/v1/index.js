@@ -13,8 +13,7 @@ const client = new Client({
 const uptime = Date.now()
 
 client.on('ready', () => {
-	const seconds = (Date.now() - uptime) / 1000
-	console.log(`Client ready! Logged in as ${client.user.tag} after ${seconds} seconds`)
+	console.log(`Client ready after ${secondsFrom(uptime)} seconds`)
 })
 
 client.on('messageCreate', async message => {
@@ -24,7 +23,8 @@ client.on('messageCreate', async message => {
 	const configuration = new Configuration(message)
 	const prefix = configuration.guild.prefix ?? '.'
 
-	// Ignore messages that doesn't starts with the guild's prefix or the messages that starts with it but there is no command ('hello', '!')
+	// Ignore messages that doesn't starts with the guild's prefix or the messages that starts with it
+	// but there is no command ('hello', '!')
 	const prefixAtStart = new RegExp(`^${escapeRegExp(prefix)}\\s*(?=[^\\s])`, 'i')
 
 	// Ignore messages with the prefix repeated ('!!!')
@@ -144,7 +144,7 @@ client.on('messageCreate', async message => {
 	})
 })
 
-const { equals, escapeRegExp, formatDate, Embed, saveFile } = require('./utility.js')
+const { equals, escapeRegExp, formatDate, Embed, saveFile, secondsFrom } = require('./utility.js')
 
 const GUILD_CONFIGS_PATH = './data/guild-configs.json'
 const USER_CONFIGS_PATH = './data/user-configs.json'
@@ -171,6 +171,7 @@ for (const file of readDir('./commands')) {
 	commandLoadTimes[file] = Date.now()
 	globalCommandList[command.name] = command
 }
+console.log(`Loaded ${Object.keys(globalCommandList).length} commands after ${secondsFrom(uptime)}`)
 
 watch('./commands', (type, file) => {
 	const path = `./commands/${file}`
@@ -238,5 +239,5 @@ function avoid() {}
 const { token } = require('./secrets.json')
 client.login(token)
 	.then(() => {
-		console.log(`Logged in as ${client.user.tag}`)
+		console.log(`Logged in as ${client.user.tag} after ${secondsFrom(uptime)} seconds`)
 	})

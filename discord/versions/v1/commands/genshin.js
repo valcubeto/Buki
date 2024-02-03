@@ -23,7 +23,7 @@ module.exports = {
 		}
 	],
 	/** @param {{ message: import('discord.js').Message, args: string[] }} param0 */
-	command: async ({ message, args: [uid] }) => {
+	async command({ message, args: [uid] }) {
 		const embed = new Embed({
 			message,
 			title: 'API de Genshin Impact',

@@ -9,7 +9,7 @@ class Embed extends EmbedBuilder {
 			...options,
 			footer: options.message
 				? {
-						text: `» ${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
+						text: `\xBB ${options.message.inGuild() ? options.message.member.displayName : options.message.author.name}`,
 						icon_url: options.message.author.displayAvatarURL()
 					}
 				: options.footer
@@ -199,6 +199,11 @@ function saveFile(data, path) {
 	writeFileSync(path, JSON.stringify(data, null, 2))
 }
 
+function secondsFrom(time) {
+	const ms = time instanceof Date ? time.valueOf() : parseInt(time)
+	return (Date.now() - ms) / 1000
+}
+
 module.exports = {
 	Embed,
 	Button,
@@ -209,5 +214,6 @@ module.exports = {
 	formatDate,
 	represent,
 	table,
-	saveFile
+	saveFile,
+	secondsFrom
 }
