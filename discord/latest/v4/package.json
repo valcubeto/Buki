@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@types/bun": "^1.1.1",
+    "discord.js": "^14.14.1"
+  },
+  "scripts": {
+    "main": "bun src/index.ts",
+    "test": "bun src/tests.ts"
+  }
+}

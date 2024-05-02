@@ -1,6 +1,6 @@
 /**/node_modules
 /**/Cargo.toml
 /**/target
-/**/secrets.json
 /**/*-configs.json
 /**/.env
+/**/bun.lockb
