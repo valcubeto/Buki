@@ -1,5 +1,4 @@
 import { Client, GatewayIntentBits, Message } from "discord.js";
-import { createInterface } from "readline";
 
 const PREFIX: string = ".";
 
@@ -25,8 +24,6 @@ client.on("messageCreate", async (msg: Message) => {
 
 client.login(process.env.TOKEN);
 
-
-// createInterface({ input: process.stdin, output: process.stdout })
 process.on("SIGINT", () => {
   console.log("Shutting down...");
   client.destroy()
