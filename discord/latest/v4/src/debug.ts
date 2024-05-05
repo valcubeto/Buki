@@ -1,4 +1,3 @@
-
 const BOLD = "\x1b[1m";
 const BOLD_END = "\x1b[22m"
 
