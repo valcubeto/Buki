@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits, Message, PermissionsBitField } from "discord.js"
-import { isInvalidContent } from "./util.ts"
+import { displayJson, isInvalidContent } from "./util.ts"
 import { PARSE_MSG_EXP, PREFIX } from "./constants.ts"
 import { handleCommand } from "./handleCommand.ts"
 
@@ -28,7 +28,7 @@ client.on("messageCreate", async (msg: Message) => {
 
   let msgMatch = msg.content.slice(PREFIX.length).match(PARSE_MSG_EXP)
   if (msgMatch === null) {
-    console.error(`"${msg.content}" didn't match`)
+    console.error(`${displayJson(msg.content)} didn't match`)
     return
   }
   const command: string = msgMatch[1];
