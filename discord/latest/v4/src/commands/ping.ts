@@ -4,6 +4,7 @@ import { defaultEmbed } from "../util.ts";
 
 export function ping({ msg }: Context) {
   const embed: EmbedBuilder = defaultEmbed(msg.author)
+    .setColor(0xff_ff_ff)
     .setTitle("Ping")
     .setDescription("Calculating ping...")
 
@@ -23,24 +24,29 @@ export function ping({ msg }: Context) {
   })
 
   // What should I do?
-  sendTask.catch((_err) => {})
+  sendTask.catch(console.error)
 }
 
 type Rgb = [r: number, g: number, b: number]
 
 const MIN_PING: number = 300
 const MAX_PING: number = 1000
-const MIDDLE: number = (MAX_PING + MIN_PING) / 2 + MIN_PING
 
 // Type needed to match ColorResolvable
-function getColorBasedOnNumber(input: number): Rgb {
-  // 0 - 700
-  let normalized = Math.max(MIN_PING, Math.min(input, MAX_PING)) - MIN_PING
+export function getColorBasedOnNumber(input: number): Rgb {
   // 350
-  let mid = MIDDLE - MIN_PING
+  const middle: number = (MAX_PING + MIN_PING) / 2 - MIN_PING
+  
+  // 0 - 700
+  let normal = Math.max(MIN_PING, Math.min(input, MAX_PING)) - MIN_PING
 
-  let r = 
-  let b = 
+  let upper = (Math.max(middle, normal) - middle)
+  // 0 - 350
+  let lower = Math.min(normal, middle)
 
-  return [r, g, 0];
+  // console.log({ input, normal, upper, lower })
+  let r = upper / middle * 255
+  let g = 255 - lower / middle * 255
+
+  return [r, g, 128];
 }

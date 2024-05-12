@@ -32,13 +32,13 @@ client.on("messageCreate", async (msg: Message) => {
     return
   }
   const command: string = msgMatch[1];
-  const args: string[] = msgMatch[2]?.split(/\s+/) ?? []
+  const args: string = msgMatch[2] ?? []
 
   handleCommand({ client, msg, command, args })
 })
 
 function destroy_success() {
-  console.log("Client destroyed")
+  console.info("Client destroyed")
   process.exit(0)
 }
 function destroy_failed(err: any) {
@@ -47,17 +47,16 @@ function destroy_failed(err: any) {
 }
 
 process.on("SIGINT", () => {
-  console.log("Shutting down...")
+  console.info("Shutting down...")
   client.destroy()
     .then(destroy_success)
     .catch(destroy_failed)
 })
 
-
-console.log("Logging in...")
+console.info("Logging in...")
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user?.tag}`)
+  console.info(`Logged in as ${client.user?.tag}`)
   console.log()
 })
 
