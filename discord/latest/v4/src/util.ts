@@ -53,13 +53,18 @@ function _displayJs(data: any, indent: number): string {
       for (const prop of props) {
         let value = data[prop]
         if (value === data) {
+          acc.push(`/* circular */`)
           continue
         }
         if (typeof value === "function" && value.name === prop) {
           acc.push(`fun ${value.name}(${letters.slice(0, value.length).join(", ")})`)
           continue
         }
-        acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, indent + 2)}`)
+        if (isNaN(parseInt(prop))) {
+          acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, indent + 2)}`)
+        } else {
+          acc.push(_displayJs(value, indent + 2))
+        }
       }
       let mid = acc.join(`\n${" ".repeat(indent + 2)}`)
       return `${mid}${" ".repeat(indent)}\n${" ".repeat(indent)}]`
@@ -72,6 +77,7 @@ function _displayJs(data: any, indent: number): string {
     for (const prop of props) {
       let value = data[prop]
       if (value === data) {
+        acc.push(`/* ${JSON.stringify(prop)} => circular */`)
         continue
       }
       if (typeof value === "function" && value.name === prop) {

@@ -20,21 +20,19 @@ export function evaluate({ msg, args }: Context) {
       output = { thrown }
     }
   }
-  let embed = defaultEmbed(msg.author)
+  const embed = defaultEmbed(msg.author)
+  function handle_err(err: any) {
+    embed
+      .setTitle("Whoops")
+      .setDescription(displayJs(err.errors.map((err: any) => ({ ...err, given: "..." }))))
+    msg.channel.send({ embeds: [embed,] })
+  }
   try {
     embed
       .setTitle(errored ? "Whoops" : "Output")
       .setDescription(displayJs(output));
-    msg.channel.send({ embeds: [embed,] }).catch((err) => {
-      embed
-        .setTitle("Whoops")
-        .setDescription(displayJson(err.errors.map((err: any) => ({ ...err, given: "..." }))))
-      msg.channel.send({ embeds: [embed,] })
-    })
+    msg.channel.send({ embeds: [embed,] }).catch(handle_err)
   } catch(err) {
-    embed
-      .setTitle("Whoops")
-      .setDescription(displayJson(err.errors.map((err: any) => ({ ...err, given: "..." }))))
-    msg.channel.send({ embeds: [embed,] })
+    handle_err(err)
   }
 }
