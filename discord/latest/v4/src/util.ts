@@ -31,6 +31,7 @@ function displayFunction(func: Function): string {
 const TAB_SIZE: number = 2
 const MAX_DEPTH: number = 2
 function _displayJs(data: any, depth: number): string {
+  // TODO: change this to function map
   if (typeof data === "number") {
     if (data > 1e10) {
       return data.toExponential().replace(/e\+/g, "e")
