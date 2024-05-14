@@ -18,21 +18,33 @@ function displayFunction(func: Function): string {
   function rejoin(args: string): string {
     return args.split(",").map(arg => arg.trim()).join(", ")
   }
+  const name = /^(?:[^0-9]|[\w\d])[\w\d]*$/.test(func.name) ? func.name : JSON.stringify(func.name)
   if (argsMatch[1] !== undefined) {
-    return `fun ${func.name}({ ${rejoin(argsMatch[3])} })`
+    return `fun ${name}({ ${rejoin(argsMatch[3])} })`
   }
   if (argsMatch[2]!== undefined) {
-    return `fun ${func.name}([${rejoin(argsMatch[3])}])`
+    return `fun ${name}([${rejoin(argsMatch[3])}])`
   }
-  return `fun ${func.name}(${rejoin(argsMatch[3])})`
+  return `fun ${name}(${rejoin(argsMatch[3])})`
 }
 
-function _displayJs(data: any, indent: number): string {
-  if (["number", "boolean"].includes(typeof data)) {
+const TAB_SIZE: number = 2
+const MAX_DEPTH: number = 2
+function _displayJs(data: any, depth: number): string {
+  if (typeof data === "number") {
+    if (data > 1e10) {
+      return data.toExponential().replace(/e\+/g, "e")
+    }
+    let [left, right] = `${data}`.split('.')
+    left = left.replace(/\B(?=(\d{3})+(?!\d))/g, "_")
+    right = right.replace(/(?=(\d{3})+(?!\d))\B/g, "_")
+    return `${left}.${right}`
+  }
+  if (typeof data === "boolean") {
     return `${data}`
   }
   if (typeof data === "string") {
-    return JSON.stringify(data)
+    return JSON.stringify(data).replace(/(?<=[^\\]?\\u)[0-9a-fA-F]{4}/g, "{$&}")
   }
   if (typeof data === "bigint") {
     return `BigInt(${data})`
@@ -47,10 +59,28 @@ function _displayJs(data: any, indent: number): string {
     return "undefined"
   }
   if (typeof data === "object") {
+    if (data === null) {
+      return "null"
+    }
+    if (data instanceof Error) {
+      return `${data.name.replace(/Error$/, "")}(${JSON.stringify(data.message)})`
+    }
+    if (depth > MAX_DEPTH) {
+      return `(${data.constructor.name})`
+    }
+    let props = Object.getOwnPropertyNames(data)
+    let descriptors = Object.getOwnPropertyDescriptors(data)
+
     if (Array.isArray(data)) {
       let props = Object.getOwnPropertyNames(data)
+      if (data.length === 0) {
+        return "[]"
+      }
       let acc: string[] = ["["]
       for (const prop of props) {
+        if (descriptors[prop].get !== undefined) {
+          return "(getter)"
+        }
         let value = data[prop]
         if (value === data) {
           acc.push(`/* circular */`)
@@ -61,33 +91,37 @@ function _displayJs(data: any, indent: number): string {
           continue
         }
         if (isNaN(parseInt(prop))) {
-          acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, indent + 2)}`)
+          acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, depth + 1)}`)
         } else {
-          acc.push(_displayJs(value, indent + 2))
+          acc.push(_displayJs(value, depth + 1))
         }
       }
-      let mid = acc.join(`\n${" ".repeat(indent + 2)}`)
-      return `${mid}${" ".repeat(indent)}\n${" ".repeat(indent)}]`
+      let spaces = " ".repeat(depth * TAB_SIZE)
+      let tab = " ".repeat((depth + 1) * TAB_SIZE)
+      return `${acc.join(`\n${tab}`)}${spaces}\n${spaces}]`
     }
-    if (data === null) {
-      return "null"
+    if (props.length === 0) {
+      return "{}"
     }
-    let props = Object.getOwnPropertyNames(data)
     let acc: string[] = ["{"]
     for (const prop of props) {
+      if (descriptors[prop].get !== undefined) {
+        return "/* getter */"
+      }
       let value = data[prop]
       if (value === data) {
-        acc.push(`/* ${JSON.stringify(prop)} => circular */`)
+        acc.push(`${JSON.stringify(prop)} => /* circular */`)
         continue
       }
       if (typeof value === "function" && value.name === prop) {
         acc.push(`fun ${value.name}(${letters.slice(0, value.length).join(", ")})`)
         continue
       }
-      acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, indent + 2)}`)
+      acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, depth + 1)}`)
     }
-    let mid = acc.join(`\n${" ".repeat(indent + 2)}`)
-    return `${mid}${" ".repeat(indent)}\n${" ".repeat(indent)}}`
+    let spaces = " ".repeat(depth * TAB_SIZE)
+    let tab = " ".repeat((depth + 1) * TAB_SIZE)
+    return `${acc.join(`\n${tab}`)}${spaces}\n${spaces}}`
   }
   if (typeof data === "symbol") {
     return `Symbol(${JSON.stringify(data.description)})`

@@ -23,18 +23,18 @@ client.on("messageCreate", async (msg: Message) => {
   const clientAsMember = await msg.guild.members.fetchMe();
   const clientPermissions = msg.channel.permissionsFor(clientAsMember)
   if (!clientPermissions.has(PermissionsBitField.Flags.SendMessages)) {
+    console.error(`Couldn't send messages to ${JSON.stringify(msg.guild.name)} (${msg.guildId})`)
     return
   }
 
-  let msgMatch = msg.content.slice(PREFIX.length).match(PARSE_MSG_EXP)
+  let msgMatch = msg.content.slice(PREFIX.length).trimStart().match(PARSE_MSG_EXP)
   if (msgMatch === null) {
-    console.error(`${displayJson(msg.content)} didn't match`)
     return
   }
   const command: string = msgMatch[1];
-  const args: string = msgMatch[2] ?? []
+  const content: string = msgMatch[2] === undefined ? "" : msgMatch[2].trimStart()
 
-  handleCommand({ client, msg, command, args })
+  handleCommand({ client, msg, command, content })
 })
 
 function destroy_success() {
