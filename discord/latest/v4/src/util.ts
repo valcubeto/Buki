@@ -22,7 +22,7 @@ function displayFunction(func: Function): string {
   if (argsMatch[1] !== undefined) {
     return `fun ${name}({ ${rejoin(argsMatch[3])} })`
   }
-  if (argsMatch[2]!== undefined) {
+  if (argsMatch[2] !== undefined) {
     return `fun ${name}([${rejoin(argsMatch[3])}])`
   }
   return `fun ${name}(${rejoin(argsMatch[3])})`
@@ -44,9 +44,11 @@ function _displayJs(data: any, depth: number): string {
   if (typeof data === "boolean") {
     return `${data}`
   }
+
   if (typeof data === "string") {
     return JSON.stringify(data).replace(/(?<=[^\\]?\\u)[0-9a-fA-F]{4}/g, "{$&}")
   }
+
   if (typeof data === "bigint") {
     return `BigInt(${data})`
   }
