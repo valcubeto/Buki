@@ -1,7 +1,7 @@
-import { Client, GatewayIntentBits, Message, PermissionsBitField } from "discord.js"
-import { displayJson, isInvalidContent } from "./util.ts"
-import { PARSE_MSG_EXP, PREFIX } from "./constants.ts"
-import { handleCommand } from "./handleCommand.ts"
+import { Client, GatewayIntentBits, Message, PermissionsBitField } from "discord.js";
+import { displayJson, isInvalidContent } from "./util.ts";
+import { PARSE_MSG_EXP, PREFIX } from "./constants.ts";
+import { handleCommand } from "./handleCommand.ts";
 
 const client = new Client({
   intents: [
@@ -9,56 +9,58 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
   ]
-})
+});
 
-
-client.on("messageCreate", async (msg: Message) => {
+client.on("messageCreate", async (msg: Message): Promise<void> => {
   if (msg.author.bot || isInvalidContent(msg.content)) {
-    return
+    return;
   }
   if (msg.channel.isDMBased() || msg.guild === null) {
-    return
+    return;
   }
 
   const clientAsMember = await msg.guild.members.fetchMe();
   const clientPermissions = msg.channel.permissionsFor(clientAsMember)
   if (!clientPermissions.has(PermissionsBitField.Flags.SendMessages)) {
-    console.error(`Couldn't send messages to ${JSON.stringify(msg.guild.name)} (${msg.guildId})`)
-    return
+    let name = JSON.stringify(msg.guild.name);
+    console.error(`Couldn't send messages to ${name} (${msg.guildId})`);
+    return;
   }
 
-  let msgMatch = msg.content.slice(PREFIX.length).trimStart().match(PARSE_MSG_EXP)
+  let msgMatch: RegExpMatchArray | null = msg.content
+    .slice(PREFIX.length)
+    .trimStart()
+    .match(PARSE_MSG_EXP);
   if (msgMatch === null) {
-    return
+    return;
   }
   const command: string = msgMatch[1];
-  const content: string = msgMatch[2] === undefined ? "" : msgMatch[2].trimStart()
+  const content: string = msgMatch[2] === undefined ? "" : msgMatch[2].trimStart();
 
-  handleCommand({ client, msg, command, content })
-})
+  handleCommand({ client, msg, command, content });
+});
 
 function destroy_success() {
-  console.info("Client destroyed")
-  process.exit(0)
+  console.info("Client destroyed");
+  process.exit(0);
 }
 function destroy_failed(err: any) {
-  console.error("Failed to destroy the client:", err)
-  process.exit(1)
+  console.error("Failed to destroy the client:", err);
+  process.exit(1);
 }
 
-process.on("SIGINT", () => {
-  console.info("Shutting down...")
+process.on("SIGINT", (): void => {
+  console.info("Shutting down...");
   client.destroy()
     .then(destroy_success)
-    .catch(destroy_failed)
-})
+    .catch(destroy_failed);
+});
 
-console.info("Logging in...")
 
-client.on("ready", () => {
-  console.info(`Logged in as ${client.user?.tag}`)
-  console.log()
-})
+client.on("ready", (): void => {
+  console.info(`Logged in as ${client.user?.tag}`);
+  console.info();
+});
 
-client.login(process.env.TOKEN)
-
+console.info("Logging in...");
+client.login(process.env.TOKEN);

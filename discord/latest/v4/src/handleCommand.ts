@@ -10,12 +10,12 @@ export interface Context {
   content: string,
 }
 
-const commands: Record<string, (ctx: Context) => void> = {
+const COMMANDS: Record<string, (ctx: Context) => void> = {
   "ping": ping,
   "eval": evaluate,
-  "test": test
+  "test": test,
 }
 
-export function handleCommand(ctx: Context) {
-  commands[ctx.command]?.(ctx)
+export function handleCommand(ctx: Context): void {
+  COMMANDS[ctx.command]?.(ctx);
 }

@@ -1,35 +1,42 @@
-import { EmbedBuilder, User } from "discord.js"
-import { PREFIX } from "./constants.ts"
+import { EmbedBuilder, User } from "discord.js";
+import { PREFIX } from "./constants.ts";
 
-export function isInvalidContent(content: string) {
-  return !content.startsWith(PREFIX) || content === PREFIX
+export function isInvalidContent(content: string): boolean {
+  return !content.startsWith(PREFIX) || content === PREFIX;
 }
 
 export function displayJson(json: any): string {
-  return `\`\`\`json\n${JSON.stringify(json, null, 2)}\`\`\``
-}
-let letters = []
-function displayFunction(func: Function): string {
-  const patt = /^(?:function\s*(?:\w+\s*)?)?\(\s*(?:(\{)|(\[))?((?:\s*\w(?:\s*,)?)*)\s*(?:\}\s*|\]\s*)?\s*\)/
-  let argsMatch = func.toString().match(patt)
-  if (argsMatch === null) {
-    return "/* not displayable */"
-  }
-  function rejoin(args: string): string {
-    return args.split(",").map(arg => arg.trim()).join(", ")
-  }
-  const name = /^(?:[^0-9]|[\w\d])[\w\d]*$/.test(func.name) ? func.name : JSON.stringify(func.name)
-  if (argsMatch[1] !== undefined) {
-    return `fun ${name}({ ${rejoin(argsMatch[3])} })`
-  }
-  if (argsMatch[2] !== undefined) {
-    return `fun ${name}([${rejoin(argsMatch[3])}])`
-  }
-  return `fun ${name}(${rejoin(argsMatch[3])})`
+  return `\`\`\`json\n${JSON.stringify(json, null, 2)}\`\`\``;
 }
 
-const TAB_SIZE: number = 2
-const MAX_DEPTH: number = 2
+let letters = []
+const FUNCTION_PATT = /^(?:function\s*(?:\w+\s*)?)?\(\s*(?:(\{)|(\[))?((?:\s*\w(?:\s*,)?)*)\s*(?:\}\s*|\]\s*)?\s*\)/;
+function displayFunction(func: Function): string {
+  let argsMatch = func.toString().match(FUNCTION_PATT);
+  if (argsMatch === null) {
+    return "/* not displayable */";
+  }
+  function rejoin(args: string): string {
+    return args
+      .split(",")
+      .map(arg => arg.trim())
+      .join(", ");
+  }
+  const IDENT_PATT = /^(?:[^0-9]|[\w\d])[\w\d]*$/;
+  const name = IDENT_PATT.test(func.name)
+    ? func.name
+    : JSON.stringify(func.name);
+  if (argsMatch[1] !== undefined) {
+    return `fun ${name}({ ${rejoin(argsMatch[3])} })`;
+  }
+  if (argsMatch[2] !== undefined) {
+    return `fun ${name}([${rejoin(argsMatch[3])}])`;
+  }
+  return `fun ${name}(${rejoin(argsMatch[3])})`;
+}
+
+const TAB_SIZE: number = 2;
+const MAX_DEPTH: number = 2;
 function _displayJs(data: any, depth: number): string {
   // TODO: change this to function map
   if (typeof data === "number") {
@@ -94,7 +101,7 @@ function _displayJs(data: any, depth: number): string {
           continue
         }
         if (isNaN(parseInt(prop))) {
-          acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, depth + 1)}`)
+          acc.push(`${JSON.stringify(prop)}: ${_displayJs(value, depth + 1)}`)
         } else {
           acc.push(_displayJs(value, depth + 1))
         }
@@ -113,14 +120,14 @@ function _displayJs(data: any, depth: number): string {
       }
       let value = data[prop]
       if (value === data) {
-        acc.push(`${JSON.stringify(prop)} => /* circular */`)
+        acc.push(`${JSON.stringify(prop)}: /* circular */`)
         continue
       }
       if (typeof value === "function" && value.name === prop) {
         acc.push(`fun ${value.name}(${letters.slice(0, value.length).join(", ")})`)
         continue
       }
-      acc.push(`${JSON.stringify(prop)} => ${_displayJs(value, depth + 1)}`)
+      acc.push(`${JSON.stringify(prop)}: ${_displayJs(value, depth + 1)}`)
     }
     let spaces = " ".repeat(depth * TAB_SIZE)
     let tab = " ".repeat((depth + 1) * TAB_SIZE)
