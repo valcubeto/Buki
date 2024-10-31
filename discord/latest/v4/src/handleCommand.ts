@@ -5,7 +5,7 @@ import { test } from "./commands/test.ts";
 
 export interface Context {
   client: Client,
-  msg: Message,
+  msg: Message<boolean>,
   command: string,
   content: string,
 }

@@ -1,9 +1,9 @@
 import { Context } from "../handleCommand.ts";
-import { defaultEmbed, displayJs, displayJson } from "../util.ts";
+import { defaultEmbed, displayJs } from "../util.ts";
 
 export function evaluate({ msg, content }: Context) {
   if (msg.author.id !== process.env.OWNER_ID) {
-    return
+    return;
   }
 
   let errored: boolean;
@@ -16,19 +16,20 @@ export function evaluate({ msg, content }: Context) {
     errored = true
     output = thrown instanceof Error ? thrown : { thrown }
   }
-  const embed = defaultEmbed(msg.author)
-  function handle_err(err: any) {
+  let embed = defaultEmbed(msg.author);
+  function handleError(err: any) {
     embed
       .setTitle("Whoops")
-      .setDescription(displayJs(err.errors.map((err: any) => ({ ...err, given: "..." }))))
-    msg.channel.send({ embeds: [embed,] }).catch((err: any) => console.error(err))
+      .setDescription(displayJs(err));
+    msg.channel.send({ embeds: [embed,] })
+      .catch((err: any) => console.error(err))
   }
   try {
     embed
       .setTitle(errored ? "Whoops" : "Output")
       .setDescription(displayJs(output));
-    msg.channel.send({ embeds: [embed,] }).catch(handle_err)
+    msg.channel.send({ embeds: [embed,] }).catch(handleError)
   } catch(err) {
-    handle_err(err)
+    handleError(err)
   }
 }

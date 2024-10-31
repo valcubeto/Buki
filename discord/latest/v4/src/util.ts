@@ -2,65 +2,137 @@ import { EmbedBuilder, User } from "discord.js";
 import { PREFIX } from "./constants.ts";
 
 export function isInvalidContent(content: string): boolean {
-  return !content.startsWith(PREFIX) || content === PREFIX;
+  return PREFIX.length > content.length || !content.startsWith(PREFIX);
 }
 
 export function displayJson(json: any): string {
   return `\`\`\`json\n${JSON.stringify(json, null, 2)}\`\`\``;
 }
 
-let letters = []
+export function fixCommas(args: string): string {
+  return args
+    .trim()
+    .split(/\s*,\s*/)
+    .join(", ");
+}
+
+/// TODO: accept more destructuring params
 const FUNCTION_PATT = /^(?:function\s*(?:\w+\s*)?)?\(\s*(?:(\{)|(\[))?((?:\s*\w(?:\s*,)?)*)\s*(?:\}\s*|\]\s*)?\s*\)/;
-function displayFunction(func: Function): string {
-  let argsMatch = func.toString().match(FUNCTION_PATT);
-  if (argsMatch === null) {
+const IDENTIFIER_PATT = /^(?:[^0-9]|[\w\d])[\w\d]*$/;
+export function displayFunction(func: Function): string {
+  let match: RegExpMatchArray | null = func.toString()
+    .match(FUNCTION_PATT);
+  if (match === null) {
     return "/* not displayable */";
   }
-  function rejoin(args: string): string {
-    return args
-      .split(",")
-      .map(arg => arg.trim())
-      .join(", ");
-  }
-  const IDENT_PATT = /^(?:[^0-9]|[\w\d])[\w\d]*$/;
-  const name = IDENT_PATT.test(func.name)
+  let name: string = IDENTIFIER_PATT.test(func.name)
     ? func.name
     : JSON.stringify(func.name);
-  if (argsMatch[1] !== undefined) {
-    return `fun ${name}({ ${rejoin(argsMatch[3])} })`;
+  let params: string = fixCommas(match[3]);
+  if (match[1] !== undefined) {
+    return `function ${name}({ ${params} }) { ... }`;
   }
-  if (argsMatch[2] !== undefined) {
-    return `fun ${name}([${rejoin(argsMatch[3])}])`;
+  if (match[2] !== undefined) {
+    return `function ${name}([${params}]) { ... }`;
   }
-  return `fun ${name}(${rejoin(argsMatch[3])})`;
+  return `function ${name}(${params}) { ... }`;
+}
+
+export function displayNumber(data: number): string {
+  return data.toString();
+}
+
+export function displayBigInt(data: bigint): string {
+  return `BigInt(${data})`;
+}
+
+function displayBoolean(data: boolean): string {
+  return data.toString();
+}
+
+export function displayString(data: string): string {
+  // Fix default unicode escapes
+  return JSON.stringify(data)
+    .replace(/(?<=[^\\]?\\u)[0-9a-fA-F]{4}/g, "{$&}");
+}
+
+export function displaySymbol(data: symbol): string {
+  return `Symbol(${JSON.stringify(data.description)})`;
+}
+
+export function isArray(data: any): boolean {
+  switch (data.constructor) {
+    case Array:
+    case Buffer:
+      return true;
+    default:
+      return false;
+  }
+}
+
+export function displayArray(data: any[], depth: number): string {
+  if (data.length === 0) {
+    return `${data.constructor}(0) []`;
+  }
+  let acc: string[] = [`${data.constructor.name}(${data.length}) [`];
+  for (let value of data) {
+    if (value === data) {
+      acc.push(`/* circular */`);
+      continue;
+    }
+    acc.push(_displayJs(value, depth + 1));
+  }
+  let spaces = " ".repeat(depth * TAB_SIZE);
+  let tab = " ".repeat((depth + 1) * TAB_SIZE);
+  return `${acc.join(`\n${tab}`)}${spaces}\n${spaces}]`;
+}
+
+export function displayObject(data: any, depth: number): string {
+  let type: string = typeof data.constructor !== "function"
+    ? `${data}`.replace(/^\[object (.*)\]$/, "$1")
+    : data.constructor.name;
+  if (depth > MAX_DEPTH) {
+    return `${type} { ... }`;
+  }
+  if (data instanceof Error) {
+    return `${data.name}(${JSON.stringify(data.message)}, ${JSON.stringify(data.stack?.slice((data.toString().length) + 5))})`;
+  }
+  if (data instanceof RegExp) {
+    return data.toString();
+  }
+  let props = Object.getOwnPropertyNames(data);
+  if (props.length === 0) {
+    return `${type} {}`;
+  }
+  let descriptors = Object.getOwnPropertyDescriptors(data);
+  let acc: string[] = [`${type} {`];
+  for (const prop of props) {
+    let key = JSON.stringify(prop);
+    if (descriptors[prop].get !== undefined) {
+      acc.push(`${key}: /* getter */`);
+      continue;
+    }
+    let value = data[prop];
+    if (typeof value === "function") {
+      acc.push(`${displayFunction(value)}`);
+      continue;
+    }
+    if (value === data) {
+      acc.push(`${key}: /* circular */`);
+      continue;
+    }
+    acc.push(`${key}: ${_displayJs(value, depth + 1)}`);
+  }
+  let spaces = " ".repeat(depth * TAB_SIZE);
+  let tab = " ".repeat((depth + 1) * TAB_SIZE);
+  return `${acc.join(`\n${tab}`)}${spaces}\n${spaces}}`;
 }
 
 const TAB_SIZE: number = 2;
 const MAX_DEPTH: number = 2;
 function _displayJs(data: any, depth: number): string {
-  // TODO: change this to function map
-  if (typeof data === "number") {
-    if (data > 1e10) {
-      return data.toExponential().replace(/e\+/g, "e")
-    }
-    let [left, right] = `${data}`.split('.')
-    left = left.replace(/\B(?=(\d{3})+(?!\d))/g, "_")
-    right = right.replace(/(?=(\d{3})+(?!\d))\B/g, "_")
-    return `${left}.${right}`
-  }
-  if (typeof data === "boolean") {
-    return `${data}`
-  }
-
-  if (typeof data === "string") {
-    return JSON.stringify(data).replace(/(?<=[^\\]?\\u)[0-9a-fA-F]{4}/g, "{$&}")
-  }
-
-  if (typeof data === "bigint") {
-    return `BigInt(${data})`
-  }
-  if (typeof data === "function") {
-    return displayFunction(data)
+  if (data === null) {
+    return "null";
   }
   if (typeof data === "undefined") {
     if (data !== undefined) {
@@ -68,80 +140,26 @@ function _displayJs(data: any, depth: number): string {
     }
     return "undefined"
   }
+  if (isArray(data)) {
+    return displayArray(data, depth);
+  }
   if (typeof data === "object") {
-    if (data === null) {
-      return "null"
-    }
-    if (data instanceof Error) {
-      return `${data.name.replace(/Error$/, "")}(${JSON.stringify(data.message)})`
-    }
-    if (depth > MAX_DEPTH) {
-      return `(${data.constructor.name})`
-    }
-    let props = Object.getOwnPropertyNames(data)
-    let descriptors = Object.getOwnPropertyDescriptors(data)
-
-    if (Array.isArray(data)) {
-      let props = Object.getOwnPropertyNames(data)
-      if (data.length === 0) {
-        return "[]"
-      }
-      let acc: string[] = ["["]
-      for (const prop of props) {
-        if (descriptors[prop].get !== undefined) {
-          return "(getter)"
-        }
-        let value = data[prop]
-        if (value === data) {
-          acc.push(`/* circular */`)
-          continue
-        }
-        if (typeof value === "function" && value.name === prop) {
-          acc.push(`fun ${value.name}(${letters.slice(0, value.length).join(", ")})`)
-          continue
-        }
-        if (isNaN(parseInt(prop))) {
-          acc.push(`${JSON.stringify(prop)}: ${_displayJs(value, depth + 1)}`)
-        } else {
-          acc.push(_displayJs(value, depth + 1))
-        }
-      }
-      let spaces = " ".repeat(depth * TAB_SIZE)
-      let tab = " ".repeat((depth + 1) * TAB_SIZE)
-      return `${acc.join(`\n${tab}`)}${spaces}\n${spaces}]`
-    }
-    if (props.length === 0) {
-      return "{}"
-    }
-    let acc: string[] = ["{"]
-    for (const prop of props) {
-      if (descriptors[prop].get !== undefined) {
-        return "/* getter */"
-      }
-      let value = data[prop]
-      if (value === data) {
-        acc.push(`${JSON.stringify(prop)}: /* circular */`)
-        continue
-      }
-      if (typeof value === "function" && value.name === prop) {
-        acc.push(`fun ${value.name}(${letters.slice(0, value.length).join(", ")})`)
-        continue
-      }
-      acc.push(`${JSON.stringify(prop)}: ${_displayJs(value, depth + 1)}`)
-    }
-    let spaces = " ".repeat(depth * TAB_SIZE)
-    let tab = " ".repeat((depth + 1) * TAB_SIZE)
-    return `${acc.join(`\n${tab}`)}${spaces}\n${spaces}}`
+    return displayObject(data, depth);
   }
-  if (typeof data === "symbol") {
-    return `Symbol(${JSON.stringify(data.description)})`
-  }
-  return "/* not displayable */"
+  const displayers = {
+    "number": displayNumber,
+    "boolean": displayBoolean,
+    "string": displayString,
+    "bigint": displayBigInt,
+    "function": displayFunction,
+    "symbol": displaySymbol,
+  };
+  return displayers[typeof data]?.(data) ?? "/* not displayable */";
 }
+
 export function displayJs(data: any) {
-  return `\`\`\`kt\n${_displayJs(data, 0)}\`\`\``
+  return `\`\`\`js\n${_displayJs(data, 0)}\`\`\``
 }
-
 
 export function defaultEmbed(author: User): EmbedBuilder {
   return new EmbedBuilder()

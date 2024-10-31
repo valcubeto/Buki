@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits, Message, PermissionsBitField } from "discord
 import { displayJson, isInvalidContent } from "./util.ts";
 import { PARSE_MSG_EXP, PREFIX } from "./constants.ts";
 import { handleCommand } from "./handleCommand.ts";
+import { cyan, yellow } from "./debug.ts";
 
 const client = new Client({
   intents: [
@@ -23,7 +24,7 @@ client.on("messageCreate", async (msg: Message): Promise<void> => {
   const clientPermissions = msg.channel.permissionsFor(clientAsMember)
   if (!clientPermissions.has(PermissionsBitField.Flags.SendMessages)) {
     let name = JSON.stringify(msg.guild.name);
-    console.error(`Couldn't send messages to ${name} (${msg.guildId})`);
+    console.error(`Couldn't send messages to ${yellow(name)} (${cyan(msg.guild.id)})`);
     return;
   }
 
@@ -49,18 +50,27 @@ function destroy_failed(err: any) {
   process.exit(1);
 }
 
-process.on("SIGINT", (): void => {
+function shutDown() {
   console.info("Shutting down...");
   client.destroy()
     .then(destroy_success)
     .catch(destroy_failed);
+}
+
+process.on("uncaughtException", (why: Error, _where: any) => {
+  console.error("Uncaught exception:", why);
+  shutDown();
 });
+process.on("SIGINT", shutDown);
 
-
-client.on("ready", (): void => {
+client.on("ready", () => {
   console.info(`Logged in as ${client.user?.tag}`);
   console.info();
 });
 
 console.info("Logging in...");
-client.login(process.env.TOKEN);
+try {
+  await client.login(process.env.TOKEN);
+} catch (why) {
+  console.error("Failed to log in:", why);
+}
