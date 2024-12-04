@@ -181,10 +181,10 @@ impl DiscordClient {
   }
 
   pub async fn login(&mut self) {
-      loop {
-        // If there is an error, it just panics. 
-        self.connect().await;
-        debug_msg!("Reconnecting...");
+    loop {
+      // If there is an error, it just panics. 
+      self.connect().await;
+      debug_msg!("Reconnecting...");
     }
   }
 
@@ -198,6 +198,11 @@ impl DiscordClient {
       .send().await
       .unwrap_or_else(|err| panic!("Failed to GET /gateway/bot: {err}"));
 
+    let status = response.status();
+    if !status.is_success() {
+      println!("response.body = {}", response.text().await.unwrap());
+      panic!("GET /gateway/bot: {status}");
+    }
     self.max_concurrency = response
       .text().await
       .unwrap()
@@ -205,14 +210,14 @@ impl DiscordClient {
       ["session_start_limit"]
       ["max_concurrency"]
       .as_i64()
-      .expect("max_concurrency was not a valid i64");
+      .unwrap_or(0);
+      // .expect("max_concurrency was not a valid i64");
 
     let mut ws = WebSocketClient::new(GATEWAY_URL)
       .unwrap_or_else(|err| panic!("Failed to parse the URL: {err}"))
       .async_connect().await
       .unwrap_or_else(|err| panic!("Failed to connect with the WebSocket server: {err}"));
-    
-    
+
     let heartbeat_interval = ws
       .next().await
       .expect("No 'hello' message")
@@ -234,8 +239,8 @@ impl DiscordClient {
         "intents": self.intents,
         "properties": {
           "os": "windows",
-          "browser": "Buki",
-          "device": "Buki",
+          "browser": "none",
+          "device": "none",
         }
       }
     }).to_string();

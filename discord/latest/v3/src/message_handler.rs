@@ -6,7 +6,8 @@ use crate::{
   json::JsonValue,
   client::DiscordClient,
   patterns::PREFIX_AND_COMMAND,
-  commands, env::get_env
+  commands,
+  env::get_env
 };
 
 // GET /{hash}.png{?size={128~2048}}
@@ -17,11 +18,14 @@ pub const AVATARS_URL: &str = "https://cdn.discordapp.com/avatars";
 pub async fn on_message(client: Arc<Mutex<DiscordClient>>, msg: JsonValue) {
   let author = &msg["author"];
   let author_id = author["id"].as_str().unwrap();
-  if author_id == get_env("USER_ID") { return }
+
+  if author_id == get_env("BOT_USER_ID") {
+    return;
+  }
 
   let content = msg["content"].as_str().expect("Message with no content");
 
-  let Some(channel_id) = msg["channel_id"].as_str() else { return };
+  let Some(channel_id) = msg["channel_id"].as_str() else { return; };
 
   let (command, content) = match PREFIX_AND_COMMAND.captures(content) {
     Some(caps) => {
@@ -42,7 +46,7 @@ pub async fn on_message(client: Arc<Mutex<DiscordClient>>, msg: JsonValue) {
   let member = &msg["member"];
   let member_name = member["nick"].as_str().unwrap_or_else(|| {
     author["global_name"].as_str().unwrap_or_else(|| {
-      author["username"].as_str().expect("User with no name")
+      author["username"].as_str().unwrap_or("(unnamed)")
     })
   });
   let icon_id = member["avatar"].as_str()

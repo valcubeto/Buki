@@ -42,13 +42,14 @@ pub type RefMut<T> = Arc<Mutex<T>>;
 
 #[tokio::main]
 async fn main() {
-  dotenv::dotenv().expect("Failed to load .env file");
+  // Git kept uploading my .env file so I moved it to another place
+  // dotenv::dotenv().expect("Failed to load .env file");
+  dotenv::from_filename("secret/.env").expect("Failed to load .env file");
 
   let channel_id = "1184915569602986127";
 
   let mut client = DiscordClient::new(get_env("BOT_TOKEN"));
   client.listen(channel_id);
 
-  builder
   client.login().await;
 }
