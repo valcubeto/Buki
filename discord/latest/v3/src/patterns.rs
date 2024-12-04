@@ -5,10 +5,6 @@ pub static PREFIX_AND_COMMAND: Lazy<Regex> = Lazy::new(|| {
   Regex::new(r"^\.(\w+)(?:\s+([\S\s]+$))?").unwrap()
 });
 
-pub static SPACES: Lazy<Regex> = Lazy::new(|| {
-  Regex::new(r"\s+").unwrap()
-});
-
 pub static UNICODE_OR_DISCORD_EMOJI: Lazy<Regex> = Lazy::new(|| {
   Regex::new(r"(?<unicode>\p{Emoji})|[^\\]?(?<discord><(?<animated>a?):(?<name>\w+):(?<id>[0-9]+)>)").unwrap()
 });

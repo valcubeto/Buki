@@ -1,10 +1,12 @@
 pub trait StringUtil: AsRef<str> {
+  /// Capitalizes the first letter of the string
   fn capitalize(&self) -> String {
     let string = self.as_ref();
     if string.is_empty() {
       return String::new();
     }
     let mut chars = string.chars();
+    // in some rare cases it will alloc more memory
     let mut result = String::with_capacity(string.len());
     for c in chars.next().unwrap().to_uppercase() {
       result.push(c);
@@ -14,26 +16,16 @@ pub trait StringUtil: AsRef<str> {
     }
     result
   }
-  fn title_case(&self) -> String {
-    let string = self.as_ref();
-    let mut result = String::with_capacity(string.len());
-    let mut capitalize_next = false;
-    for c in string.chars() {
-      if c.is_whitespace() {
-        capitalize_next = true;
-        continue;
-      }
-      if capitalize_next {
-        capitalize_next = false;
-        for ch in c.to_uppercase() {
-          result.push(ch);
-        }
-        continue;
-      }
-      result.push(c);
-    }
-    result
-  }
+  // /// Capitalizes the first letter of each word
+  // fn title_case(&self) -> String {
+  //   let string = self.as_ref();
+  //   let mut result = String::with_capacity(string.len());
+  //   let mut words = string.();
+  //   for word in words {
+  //     result.push_str(word.capitalize().as_str());
+  //   }
+  //   result
+  // }
 }
 impl StringUtil for String {}
 impl StringUtil for &str {}

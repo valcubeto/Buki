@@ -16,6 +16,7 @@ pub trait DisplayJson: serde::ser::Serialize {
     serde_json::to_string(self)
       .unwrap_or_else(|err| panic!("Failed to display the JSON Value as a string: {err}"))
   }
+  #[allow(unused)]
   fn display_pretty(&self) -> String {
     serde_json::to_string_pretty(self)
       .unwrap_or_else(|err| panic!("Failed to display the JSON Value as a pretty string: {err}"))

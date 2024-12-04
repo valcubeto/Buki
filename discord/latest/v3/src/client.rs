@@ -1,27 +1,18 @@
 use serde_json::json;
 use futures_util::{ SinkExt as _, StreamExt as _ };
 use reqwest::Client as ReqwestClient;
-use tokio::{ time::sleep, sync::Mutex };
-use websocket_lite::{
-  ClientBuilder as WebSocketClient,
-  Message,
-  Opcode
-};
+use websocket_lite::{ ClientBuilder as WebSocketClient, Message, Opcode };
 use rand::Rng;
-use std::{
-  time::{ Duration, Instant },
-  sync::Arc
-};
-use crate::{
-  cache::ClientCache,
-  // discapi::Guild,
-  json::{ JsonValue, ParseJson as _, DisplayJson as _ },
-  debug_msg,
-  debug,
-  debug_display,
-  intents,
-  gateway_opcodes,
-};
+use tokio::time::sleep;
+use tokio::sync::Mutex;
+use std::time::{ Duration, Instant };
+use std::sync::Arc;
+use crate::cache::ClientCache;
+use crate::env::get_env;
+// discapi::Guild
+use crate::json::{ JsonValue, ParseJson as _, DisplayJson as _ };
+#[allow(unused_imports)]
+use crate::{ debug_msg, debug, debug_display, intents, gateway_opcodes };
 
 pub const API_URL: &str = "https://discord.com/api/v10";
 pub const GATEWAY_URL: &str = "wss://gateway.discord.gg/?v=10&encoding=json";
@@ -46,7 +37,6 @@ impl DiscordClient {
     DiscordClient {
       token,
       channels: Vec::new(),
-      // events: Vec::new(),
       http_client: ReqwestClient::builder()
         .user_agent("Buki/v0.1")
         .build()
@@ -66,47 +56,37 @@ impl DiscordClient {
 
   pub async fn add_reaction(&self, channel_id: &str, message_id: &str, emoji: &str) {
     let url = format!("{API_URL}/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me");
-
-    self.send_message(channel_id, format!("`PUT {url}`")).await;
-
-    let response = self.http_client
-    .put(url)
-    .header("Authorization", format!("Bot {}", self.token))
-    .header("Content-Length", "0")
-    .send().await
-    .unwrap_or_else(|err| panic!("Failed to react with {emoji:?}: {err}"));
-
-    self.send_message(channel_id, format!("[{}] {}", response.status(), response.text().await.unwrap())).await;
+    self.http_client
+      .put(url)
+      .header("Authorization", format!("Bot {}", self.token))
+      .header("Content-Length", "0")
+      .send().await
+      .unwrap_or_else(|err| panic!("Failed to react with {emoji:?}: {err}"));
   }
 
   /// Sends the content to the specified channel and
   /// returns the parsed message object
-  #[allow(unused)]
   pub async fn send_message<T: ToString>(&self, channel_id: &str, content: T) -> JsonValue {
     let request = self.http_client
       .post(format!("{API_URL}/channels/{channel_id}/messages"))
       .header("Authorization", format!("Bot {}", self.token))
       .header("Content-Type", "application/json")
       // this looks a bit strange but its actually
-      // something like {"content":"Hello"}
+      // something like `{"content":"Hello"}`
       .body(format!(r#"{{"content":{:?}}}"#, content.to_string()));
 
     let response = request
-      .send()
-      .await
+      .send().await
       .unwrap_or_else(|err| panic!("Failed to make the request to send a message to channel #{channel_id}: {err}"))
       .error_for_status()
       .unwrap_or_else(|err| panic!("Failed to send a message to channel #{channel_id}: {err}"));
 
-    let text = response
-      .text()
-      .await
-      .unwrap();
+    let text = response.text().await.unwrap();
 
     text.parse_json()
   }
   pub async fn send_message_with_json(&self, channel_id: &str, content: &JsonValue) -> JsonValue {
-    // I should return after send() so there is a possibility to
+    // TODO: I should return after send() so there is a possibility to
     // send multiple messages at a time
     // maybe return 'impl Future' returning 'SendMessageTask'
     // so you can await it later
@@ -120,17 +100,12 @@ impl DiscordClient {
       .body(content.display());
 
     let response = request
-      .send()
-      .await
+      .send().await
       .unwrap_or_else(|err| panic!("Failed to make the request to send a message to channel #{channel_id}: {err}"))
       .error_for_status()
       .unwrap_or_else(|err| panic!("Failed to send a message to channel #{channel_id}: {err}"));
 
-    let text = response
-      .text()
-      .await
-      .unwrap();
-
+    let text = response.text().await.unwrap();
     text.parse_json()
   }
   pub async fn try_send_message_with_json(&self, channel_id: &str, content: &JsonValue) -> Result<JsonValue, reqwest::Error> {
@@ -141,35 +116,29 @@ impl DiscordClient {
       .body(content.display());
 
     let response = request
-      .send()
-      .await?
+      .send().await?
       .error_for_status()?;
 
-    let text = response
-      .text()
-      .await
-      .unwrap();
-
+    let text = response.text().await.unwrap();
     Ok(text.parse_json())
   }
 
+  pub async fn edit_message<T: ToString>(&self, channel_id: &str, message_id: &str, new_content: T) {
+    self.edit_message_with_json(channel_id, message_id, &json!({ "content": new_content.to_string() })).await;
+  }
   pub async fn edit_message_with_json(&self, channel_id: &str, message_id: &str, new_content: &JsonValue) {
     let request = self.http_client
       .patch(format!("{API_URL}/channels/{}/messages/{}", channel_id, message_id))
       .header("Authorization", format!("Bot {}", self.token))
       .header("Content-Type", "application/json")
       .body(new_content.display());
-
-    let _ = request
-      .send()
-      .await
+    request
+      .send().await
       .unwrap_or_else(|err| panic!("Failed to edit a message: {err}"));
-
     // let text = response
     //   .text()
     //   .await
     //   .expect("Not-text response when editing a message");
-
     // just use the message_id you had
     // text.parse_json()
   }
@@ -210,8 +179,7 @@ impl DiscordClient {
       ["session_start_limit"]
       ["max_concurrency"]
       .as_i64()
-      .unwrap_or(0);
-      // .expect("max_concurrency was not a valid i64");
+      .expect("max_concurrency was not a valid i64");
 
     let mut ws = WebSocketClient::new(GATEWAY_URL)
       .unwrap_or_else(|err| panic!("Failed to parse the URL: {err}"))
@@ -260,8 +228,6 @@ impl DiscordClient {
         let duration = interval - Instant::now() + Duration::from_millis(jitter());
         sleep(duration).await;
         *heartbeat_interval2.lock().await = Instant::now() + Duration::from_millis(heartbeat_interval);
-        // debug_msg!("Sending a heartbeat...");
-
         let sequence_number = (*sequence_number2.lock().await)
           .map(|n| n.to_string()).unwrap_or("null".to_string());
         let payload = format!(r#"{{"op":{},"d":{}}}"#, gateway_opcodes::HEARTBEAT, sequence_number);
@@ -269,12 +235,12 @@ impl DiscordClient {
         ws2.lock().await
           .send(Message::text(payload)).await
           .unwrap_or_else(|err| panic!("Failed to send heartbeat: {err}"));
-        // debug_msg!("Heartbeat sent");
       }
     });
 
     // Receiver loop
     loop {
+      // Sleep 2 seconds before trying to receive a message
       sleep(Duration::from_secs(2)).await;
       let mut ws_lock = ws.lock().await;
       let timeout = *self.heartbeat_interval.lock().await - Instant::now();
@@ -308,13 +274,13 @@ impl DiscordClient {
         }
         Opcode::Pong => {}
         Opcode::Close => {
-          eprintln!("Connection closed by the gateway");
+          debug_msg!("Connection closed by the gateway");
           break;
         }
-        Opcode::Binary => unreachable!("Binary message found"),
+        Opcode::Binary => debug_msg!("Binary message received (ignored)"),
         Opcode::Text => {
           let data = msg.as_text().unwrap().parse_json();
-          if self.handle_text(data).await.is_err() {
+          if self.handle_text(data).await.is_none() {
             return;
           };
         } // Text
@@ -323,19 +289,19 @@ impl DiscordClient {
     let _ = ws.lock().await.send(Message::close(None)).await;
     heartbeat_loop.abort();
   }
-  async fn handle_text(&mut self, data: JsonValue) -> Result<(), ()> {
+  async fn handle_text(&mut self, data: JsonValue) -> Option<()> {
     if let Some(n) = data["s"].as_i64() {
       *self.sequence_number.lock().await = Some(n);
     }
     let op_code = data["op"].as_u64().expect("No op code");
+    use gateway_opcodes as oc;
     match op_code {
-      gateway_opcodes::HEARTBEAT_ACK => {
-        // debug_msg!("The gateway received the heartbeat");
+      oc::HEARTBEAT_ACK => {}
+      oc::RECONNECT | oc::INVALID_SESSION => {
+        // Skip to reconnect
+        return None;
       }
-      gateway_opcodes::RECONNECT | gateway_opcodes::INVALID_SESSION => {
-        return Err(());
-      }
-      gateway_opcodes::DISPATCH => {
+      oc::DISPATCH => {
         let event_name = data["t"].as_str().expect("No event name at event dispatch");
         let data = data["d"].clone();
         match event_name {
@@ -345,7 +311,7 @@ impl DiscordClient {
             self.resume_gateway_url = Some(data["resume_gateway_url"].as_str().unwrap().to_string());
           },
           "MESSAGE_CREATE" => {
-            // me da paja cambiar toda la implementacion para que self sea directamente un Arc
+            // Una paja cambiar toda la implementacion para que self sea directamente un Arc
             tokio::spawn(crate::message_handler::on_message(Arc::new(Mutex::new(self.clone())), data));
           },
           "GUILD_CREATE" => {
@@ -355,14 +321,19 @@ impl DiscordClient {
             let id = p.as_str().unwrap();
             self.cache.guilds.insert(Arc::from(id), data);
           }
-          _ => {
-            debug_msg!("Received an event: {event_name:?}");
+          "MESSAGE_UPDATE" => {
+            let author_id = data["author"]["id"].as_str().unwrap();
+            if author_id == get_env("BOT_USER_ID") {
+              return Some(());
+            }
+            // TODO: handle
           }
+          _ => debug_msg!("Received an event: {event_name:?}")
         }
       },
       _ => unimplemented!("op_code = {op_code}")
     }
-    Ok(())
+    Some(())
   }
 }
 

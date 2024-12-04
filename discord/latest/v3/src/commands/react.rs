@@ -1,26 +1,16 @@
-use serde_json::json;
+use crate::client::DiscordClient;
+use crate::patterns::UNICODE_OR_DISCORD_EMOJI;
+use crate::json::JsonValue;
+use crate::RefMut;
 
-use crate::{
-  client::DiscordClient,
-  patterns::{ SPACES, UNICODE_OR_DISCORD_EMOJI },
-  json::JsonValue, RefMut
-};
-
-pub async fn react(client: RefMut<DiscordClient>, content: &str, channel_id: &str, message_id: &str, author_obj: JsonValue) {
+pub async fn react(client: RefMut<DiscordClient>, content: &str, channel_id: &str, message_id: &str, _author_obj: JsonValue) {
   let client = client.lock().await;
-  if content.is_empty() {
-    let embed = json!({
-      "embeds": [{
-        "author": author_obj,
-        "color": 0xff5050,
-        "title": "Usage",
-        "description": "`.react <emoji>`"
-      }]
-    });
-    client.send_message_with_json(channel_id, &embed).await;
+
+  let args: Vec<&str> = content.split_whitespace().collect();
+  if args.is_empty() {
+    client.send_message(channel_id, "**Usage**: `.react <emoji>`").await;
     return;
   }
-  let args: Vec<&str> = SPACES.split(content).collect();
 
   let emoji: &str = match UNICODE_OR_DISCORD_EMOJI.captures(args[0]) {
     None => {
