@@ -67,58 +67,50 @@ impl DiscordClient {
   /// Sends the content to the specified channel and
   /// returns the parsed message object
   pub async fn send_message<T: ToString>(&self, channel_id: &str, content: T) -> JsonValue {
-    let request = self.http_client
-      .post(format!("{API_URL}/channels/{channel_id}/messages"))
-      .header("Authorization", format!("Bot {}", self.token))
-      .header("Content-Type", "application/json")
-      // this looks a bit strange but its actually
-      // something like `{"content":"Hello"}`
-      .body(format!(r#"{{"content":{:?}}}"#, content.to_string()));
-
-    let response = request
-      .send().await
-      .unwrap_or_else(|err| panic!("Failed to make the request to send a message to channel #{channel_id}: {err}"))
-      .error_for_status()
-      .unwrap_or_else(|err| panic!("Failed to send a message to channel #{channel_id}: {err}"));
-
-    let text = response.text().await.unwrap();
-
-    text.parse_json()
-  }
-  pub async fn send_message_with_json(&self, channel_id: &str, content: &JsonValue) -> JsonValue {
     // TODO: I should return after send() so there is a possibility to
     // send multiple messages at a time
     // maybe return 'impl Future' returning 'SendMessageTask'
     // so you can await it later
-
-    let request = self.http_client
-      .post(format!("{API_URL}/channels/{channel_id}/messages"))
-      .header("Authorization", format!("Bot {}", self.token))
-      .header("Content-Type", "application/json")
-      // this looks a bit strange but its actually
-      // something like {"content":"Hello"}
-      .body(content.display());
-
-    let response = request
-      .send().await
-      .unwrap_or_else(|err| panic!("Failed to make the request to send a message to channel #{channel_id}: {err}"))
-      .error_for_status()
-      .unwrap_or_else(|err| panic!("Failed to send a message to channel #{channel_id}: {err}"));
-
-    let text = response.text().await.unwrap();
-    text.parse_json()
+    let response = self.try_send_message_with_json_text(channel_id, format!(r#"{{"content":{:?}}}"#, content.to_string())).await;
+    match response {
+      Ok(data) => data,
+      Err(err) => {
+        panic!("Failed to send a message to channel #{channel_id}: {err}")
+      }
+    }
   }
-  pub async fn try_send_message_with_json(&self, channel_id: &str, content: &JsonValue) -> Result<JsonValue, reqwest::Error> {
+  pub async fn send_message_with_json(&self, channel_id: &str, content: &JsonValue) -> JsonValue {
+    match self.try_send_message_with_json(channel_id, content).await {
+      Ok(data) => data,
+      Err(err) => {
+        panic!("Failed to send a message to channel #{channel_id}: {err}")
+      }
+    }
+  }
+  #[inline]
+  pub async fn try_send_message_with_json(&self, channel_id: &str, content: &JsonValue) -> Result<JsonValue, String> {
+    self.try_send_message_with_json_text(channel_id, content.display()).await
+  }
+  // This is crazy
+  pub async fn try_send_message_with_json_text(&self, channel_id: &str, content: String) -> Result<JsonValue, String> {
     let request = self.http_client
       .post(format!("{API_URL}/channels/{channel_id}/messages"))
       .header("Authorization", format!("Bot {}", self.token))
       .header("Content-Type", "application/json")
-      .body(content.display());
+      .body(content);
 
-    let response = request
-      .send().await?
-      .error_for_status()?;
-
+    let response = match request.send().await {
+      Ok(response) => response,
+      Err(err) => {
+        let err_text = err.status().unwrap();
+        return Err(err_text.as_str().to_owned());
+      }
+    };
+    if !response.status().is_success() {
+      let text = response.text().await.unwrap();
+      debug_msg!("{text}");
+      return Err(text);
+    }
     let text = response.text().await.unwrap();
     Ok(text.parse_json())
   }

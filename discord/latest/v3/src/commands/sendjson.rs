@@ -2,12 +2,9 @@ use std::process::Command;
 use serde_json::json;
 
 use crate::{
-  patterns::MARKDOWN_CODE,
-  json::JsonValue,
-  client::DiscordClient,
-  env::get_env, RefMut,
-  util::StringUtil as _
+  client::DiscordClient, debug_msg, env::get_env, json::JsonValue, patterns::MARKDOWN_CODE, util::StringUtil as _, RefMut
 };
+
 
 pub async fn sendjson(client: RefMut<DiscordClient>, content: &str, author_id: &str, channel_id: &str) {
   let client = client.lock().await;
@@ -35,7 +32,7 @@ pub async fn sendjson(client: RefMut<DiscordClient>, content: &str, author_id: &
   }
   let json = std::str::from_utf8(&output.stdout).unwrap();
 
-  let data: JsonValue = match serde_json::from_str(json) {
+  let data: JsonValue = match serde_json::from_str::<JsonValue>(json) {
     Ok(data) => data,
     Err(err) => {
       let err = err.to_string().capitalize();
