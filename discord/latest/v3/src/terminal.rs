@@ -2,82 +2,92 @@
 
 use std::fmt::Display;
 
-macro_rules! def_const {
-  ($name:ident = $value:expr) => {
-    pub const $name: &str = $value;
-  };
-}
-macro_rules! fmt_func {
-  ($fn_name:ident, $start:ident, $end:ident) => {
-    #[inline]
-    fn $fn_name(&self) -> String {
-      format!("{}{}{}", $start, self, $end)
-    }
+macro_rules! def_consts {
+  ($($name:ident = $value:expr;)*) => {
+    $(
+      pub const $name: &str = $value;
+    )*
   };
 }
 
-def_const!(BOLD = "\u{1b}[1m");
-def_const!(BOLD_END = "\u{1b}[22m");
-def_const!(ITALIC = "\u{1b}[3m");
-def_const!(ITALIC_END = "\u{1b}[23m");
-def_const!(UNDERLINE = "\u{1b}[4m");
-def_const!(UNDERLINE_END = "\u{1b}[24m");
-def_const!(RED = "\u{1b}[31m");
-def_const!(GREEN = "\u{1b}[32m");
-def_const!(YELLOW = "\u{1b}[33m");
-def_const!(BLUE = "\u{1b}[34m");
-def_const!(MAGENTA = "\u{1b}[35m");
-def_const!(CYAN = "\u{1b}[36m");
-def_const!(BRIGHT_RED = "\u{1b}[91m");
-def_const!(BRIGHT_GREEN = "\u{1b}[92m");
-def_const!(BRIGHT_YELLOW = "\u{1b}[93m");
-def_const!(BRIGHT_BLUE = "\u{1b}[94m");
-def_const!(BRIGHT_MAGENTA = "\u{1b}[95m");
-def_const!(BRIGHT_CYAN = "\u{1b}[96m");
-def_const!(FOREGROUND_END = "\u{1b}[39m");
-def_const!(BG_RED = "\u{1b}[41m");
-def_const!(BG_GREEN = "\u{1b}[42m");
-def_const!(BG_YELLOW = "\u{1b}[43m");
-def_const!(BG_BLUE = "\u{1b}[44m");
-def_const!(BG_MAGENTA = "\u{1b}[45m");
-def_const!(BG_CYAN = "\u{1b}[46m");
-def_const!(BG_BRIGHT_RED = "\u{1b}[101m");
-def_const!(BG_BRIGHT_GREEN = "\u{1b}[102m");
-def_const!(BG_BRIGHT_YELLOW = "\u{1b}[103m");
-def_const!(BG_BRIGHT_BLUE = "\u{1b}[104m");
-def_const!(BG_BRIGHT_MAGENTA = "\u{1b}[105m");
-def_const!(BG_BRIGHT_CYAN = "\u{1b}[106m");
-def_const!(BG_END = "\u{1b}[49m");
+def_consts! {
+  BOLD = "\u{1b}[1m";
+  BOLD_END = "\u{1b}[22m";
+  ITALIC = "\u{1b}[3m";
+  ITALIC_END = "\u{1b}[23m";
+  UNDERLINE = "\u{1b}[4m";
+  UNDERLINE_END = "\u{1b}[24m";
+  RED = "\u{1b}[31m";
+  GREEN = "\u{1b}[32m";
+  YELLOW = "\u{1b}[33m";
+  BLUE = "\u{1b}[34m";
+  MAGENTA = "\u{1b}[35m";
+  CYAN = "\u{1b}[36m";
+  BRIGHT_RED = "\u{1b}[91m";
+  BRIGHT_GREEN = "\u{1b}[92m";
+  BRIGHT_YELLOW = "\u{1b}[93m";
+  BRIGHT_BLUE = "\u{1b}[94m";
+  BRIGHT_MAGENTA = "\u{1b}[95m";
+  BRIGHT_CYAN = "\u{1b}[96m";
+  FOREGROUND_END = "\u{1b}[39m";
+  BG_RED = "\u{1b}[41m";
+  BG_GREEN = "\u{1b}[42m";
+  BG_YELLOW = "\u{1b}[43m";
+  BG_BLUE = "\u{1b}[44m";
+  BG_MAGENTA = "\u{1b}[45m";
+  BG_CYAN = "\u{1b}[46m";
+  BG_BRIGHT_RED = "\u{1b}[101m";
+  BG_BRIGHT_GREEN = "\u{1b}[102m";
+  BG_BRIGHT_YELLOW = "\u{1b}[103m";
+  BG_BRIGHT_BLUE = "\u{1b}[104m";
+  BG_BRIGHT_MAGENTA = "\u{1b}[105m";
+  BG_BRIGHT_CYAN = "\u{1b}[106m";
+  BG_END = "\u{1b}[49m";
+}
+
+macro_rules! fmt_methods {
+  ($(fn $fn_name:ident() => ($start:ident, $end:ident);)*) => {
+    $(
+      #[inline]
+      /// Returns a `String` with the given style to display.
+      fn $fn_name(&self) -> String {
+        format!("{}{}{}", $start, self, $end)
+      }
+    )*
+  }
+}
 
 pub trait Stylize: Display {
-  fmt_func!(bold, BOLD, BOLD_END);
-  fmt_func!(underline, UNDERLINE, UNDERLINE_END);
-  fmt_func!(red, RED, FOREGROUND_END);
-  fmt_func!(green, GREEN, FOREGROUND_END);
-  fmt_func!(yellow, YELLOW, FOREGROUND_END);
-  fmt_func!(blue, BLUE, FOREGROUND_END);
-  fmt_func!(magenta, MAGENTA, FOREGROUND_END);
-  fmt_func!(cyan, CYAN, FOREGROUND_END);
-  fmt_func!(bright_red, BRIGHT_RED, FOREGROUND_END);
-  fmt_func!(bright_green, BRIGHT_GREEN, FOREGROUND_END);
-  fmt_func!(bright_yellow, BRIGHT_YELLOW, FOREGROUND_END);
-  fmt_func!(bright_blue, BRIGHT_BLUE, FOREGROUND_END);
-  fmt_func!(bright_magenta, BRIGHT_MAGENTA, FOREGROUND_END);
-  fmt_func!(bright_cyan, BRIGHT_CYAN, FOREGROUND_END);
-  fmt_func!(bg_red, BG_RED, BG_END);
-  fmt_func!(bg_green, BG_GREEN, BG_END);
-  fmt_func!(bg_yellow, BG_YELLOW, BG_END);
-  fmt_func!(bg_blue, BG_BLUE, BG_END);
-  fmt_func!(bg_magenta, BG_MAGENTA, BG_END);
-  fmt_func!(bg_cyan, BG_CYAN, BG_END);
-  fmt_func!(bg_bright_red, BG_BRIGHT_RED, BG_END);
-  fmt_func!(bg_bright_green, BG_BRIGHT_GREEN, BG_END);
-  fmt_func!(bg_bright_yellow, BG_BRIGHT_YELLOW, BG_END);
-  fmt_func!(bg_bright_blue, BG_BRIGHT_BLUE, BG_END);
-  fmt_func!(bg_bright_magenta, BG_BRIGHT_MAGENTA, BG_END);
-  fmt_func!(bg_bright_cyan, BG_BRIGHT_CYAN, BG_END);
+  fmt_methods! {
+    fn bold() => (BOLD, BOLD_END);
+    fn underline() => (UNDERLINE, UNDERLINE_END);
+    fn red() => (RED, FOREGROUND_END);
+    fn green() => (GREEN, FOREGROUND_END);
+    fn yellow() => (YELLOW, FOREGROUND_END);
+    fn blue() => (BLUE, FOREGROUND_END);
+    fn magenta() => (MAGENTA, FOREGROUND_END);
+    fn cyan() => (CYAN, FOREGROUND_END);
+    fn bright_red() => (BRIGHT_RED, FOREGROUND_END);
+    fn bright_green() => (BRIGHT_GREEN, FOREGROUND_END);
+    fn bright_yellow() => (BRIGHT_YELLOW, FOREGROUND_END);
+    fn bright_blue() => (BRIGHT_BLUE, FOREGROUND_END);
+    fn bright_magenta() => (BRIGHT_MAGENTA, FOREGROUND_END);
+    fn bright_cyan() => (BRIGHT_CYAN, FOREGROUND_END);
+    fn bg_red() => (BG_RED, BG_END);
+    fn bg_green() => (BG_GREEN, BG_END);
+    fn bg_yellow() => (BG_YELLOW, BG_END);
+    fn bg_blue() => (BG_BLUE, BG_END);
+    fn bg_magenta() => (BG_MAGENTA, BG_END);
+    fn bg_cyan() => (BG_CYAN, BG_END);
+    fn bg_bright_red() => (BG_BRIGHT_RED, BG_END);
+    fn bg_bright_green() => (BG_BRIGHT_GREEN, BG_END);
+    fn bg_bright_yellow() => (BG_BRIGHT_YELLOW, BG_END);
+    fn bg_bright_blue() => (BG_BRIGHT_BLUE, BG_END);
+    fn bg_bright_magenta() => (BG_BRIGHT_MAGENTA, BG_END);
+    fn bg_bright_cyan() => (BG_BRIGHT_CYAN, BG_END);
+  }
 }
-impl<T> Stylize for T  where T: Display {}
+impl<T: Display> Stylize for T {}
 
 #[macro_export]
 macro_rules! debug {
