@@ -11,5 +11,8 @@
   "scripts": {
     "main": "bun src/index.ts",
     "test": "echo 'No tests defined'"
+  },
+  "dependencies": {
+    "discord.js": "^14.19.3"
   }
 }

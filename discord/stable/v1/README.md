@@ -1,15 +1,5 @@
-# buki
+# Buki
+A Discord bot written in TypeScript, powered by Bun.
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.2. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+# Installation
+Click [here](https://discord.com/oauth2/authorize?client_id=1184917749915459685) to install Buki on your server.
