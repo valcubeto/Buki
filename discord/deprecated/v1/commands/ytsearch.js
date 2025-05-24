@@ -55,7 +55,7 @@ module.exports = {
 			const collector = sent.createMessageComponentCollector({ filter: interaction => interaction.user.id === message.author.id, time: 60_000 })
 			collector.on('collect', interaction => {
 				if (interaction.customId === 'previous') i--
-				if (interaction.customId === 'next') i++
+				else if (interaction.customId === 'next') i++
 
 				previous.setDisabled(i === 0)
 				index.setLabel(`${i + 1}/${videos.length}`)
