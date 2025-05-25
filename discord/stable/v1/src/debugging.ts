@@ -1,7 +1,8 @@
 import { formatTimeShort } from "./formatting"
-import chalk, { type ChalkInstance } from "chalk-pipe"
+import chalk from "chalk"
 
-export const cyan: ChalkInstance = chalk("cyan")
+const { cyan } = chalk
+export const error = chalk.bold.red
 
 export function debug(message: string) {
   console.log(`[${cyan(formatTimeShort(new Date()))}]`)
@@ -10,7 +11,7 @@ export function debug(message: string) {
 }
 
 export function debugError(message: string) {
-  console.error(`[${formatTimeShort(new Date())}]`)
+  console.error(`[${error(formatTimeShort(new Date()))}]`)
   console.error(message)
   console.error('')
 }

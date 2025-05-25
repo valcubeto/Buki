@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test"
 import { formatTimeLong, formatTimeShort } from "./formatting.ts"
+import { loadCommands } from "./load_commands.ts"
 
 test("time formatting", () => {
   expect(formatTimeLong(new Date("2023-01-01T12:00:00Z"))).toBe("Sunday, January 1st, 2023. 12:00 PM")
@@ -8,5 +9,9 @@ test("time formatting", () => {
 })
 
 test("env variables", () => {
-  expect(Bun.env.ENV_LOADING).toBe("OK")
+  expect(Bun.env.ENV_LOADS).toBe("OK")
+})
+
+test("command loading", async () => {
+  console.log(await loadCommands())
 })

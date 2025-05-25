@@ -22,7 +22,6 @@ export function formatTimeLong(time: Date): string {
   let year = time.getFullYear()
   let hour = (time.getHours() % 12 || 12).toString().padStart(2, "0")
   let minute = time.getMinutes().toString().padStart(2, "0")
-  console.log({minute})
   let meridiem = time.getHours() < 12 ? "AM" : "PM"
   return `${dayName}, ${month} ${addOrdinal(day)}, ${year}. ${hour}:${minute} ${meridiem}`
 }
