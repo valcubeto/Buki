@@ -10,9 +10,11 @@
   },
   "scripts": {
     "main": "bun src/index.ts",
-    "test": "echo 'No tests defined'"
+    "test": "bun test src/tests.ts"
   },
   "dependencies": {
+    "chalk": "^5.4.1",
+    "chalk-pipe": "^6.2.0",
     "discord.js": "^14.19.3"
   }
 }
