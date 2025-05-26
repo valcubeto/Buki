@@ -1,17 +1,15 @@
+import { stderr, stdout } from "bun"
 import { formatTimeShort } from "./formatting"
 import chalk from "chalk"
 
-const { cyan } = chalk
-export const error = chalk.bold.red
+const { cyan, red } = chalk
 
 export function debug(message: string) {
-  console.log(`[${cyan(formatTimeShort(new Date()))}]`)
-  console.log(message)
-  console.log('')
+  stdout.write(`[${formatTimeShort(new Date()).replace(/\d+/g, ($0) => cyan($0))}]\n`)
+  stdout.write(`${cyan("Info")}: ${message}\n\n`)
 }
 
 export function debugError(message: string) {
-  console.error(`[${error(formatTimeShort(new Date()))}]`)
-  console.error(message)
-  console.error('')
+  stderr.write(`[${formatTimeShort(new Date()).replace(/\d+/g, ($0) => red($0))}]\n`)
+  stderr.write(`${red("Error")}: ${message}\n\n`)
 }

@@ -34,8 +34,8 @@ export function getCommandDescription(command: string): LocalizationMap {
  * Returns the command names, usually defaulting to English.
 */
 export function getCommandName(command: string): LocalizationMap {
-  const name = names[command] ?? { [Locale.EnglishUS]: command }
-  const en_us = name[Locale.EnglishUS]
+  const name = { [Locale.EnglishUS]: command, ...(names[command] ?? {}) }
+  const en_us: string = name[Locale.EnglishUS]!
   const en_gb = name[Locale.EnglishGB] ?? en_us
   const es_es = name[Locale.SpanishES] ?? en_us
   const es_latam = name[Locale.SpanishLATAM] ?? es_es ?? en_us
@@ -51,7 +51,7 @@ export function getCommandName(command: string): LocalizationMap {
 
 export function getReply(replyName: string, locale: Locale, formatting?: any[]): string {
   // The reply must exist.
-  const locales = replies[replyName]!
+  const locales: LocalizationMap = replies[replyName]!
   let reply: string = ""
   switch (locale) {
     case Locale.EnglishGB:

@@ -1,7 +1,6 @@
 import { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, type Interaction } from "discord.js"
 import { debug, debugError } from "./debugging"
-import { loadCommands } from "./load_commands"
-import { reloadCommands } from "./commands/reload"
+import { loadCommands, uploadCommands } from "./load_commands"
 
 const client = new Client({
   intents: [
@@ -11,15 +10,15 @@ const client = new Client({
   ]
 })
 
-export let commands = await loadCommands()
 
 client.once(Events.ClientReady, (_client) => {
   debug(`Logged in as ${client.user!.username}. Bot ready.`)
   client.user?.setStatus(PresenceUpdateStatus.Idle)
 })
 
-if (process.argv.includes("--reload")) {
-  reloadCommands(Bun.env["BOT_TOKEN"]!, Bun.env["APP_ID"]!)
+export let globalCommands = await loadCommands()
+if (process.argv.includes("--upload")) {
+  uploadCommands(Bun.env["BOT_TOKEN"]!, Bun.env["APP_ID"]!)
 }
 
 // user id => number representing the time in ms
@@ -35,7 +34,7 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
     await Bun.sleep(Date.now() - cd)
   }
   cooldown.set(interaction.user.id, Date.now())
-  const command = commands.get(interaction.commandName)
+  const command = globalCommands.get(interaction.commandName)
   if (command === undefined) {
     debugError(`Received command interaction for unknown command ${interaction.commandName}`)
     return

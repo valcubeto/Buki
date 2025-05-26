@@ -1,11 +1,13 @@
-import { SlashCommandBuilder, CommandInteraction, Collection } from "discord.js"
+import { SlashCommandBuilder, CommandInteraction, Collection, REST, Routes } from "discord.js"
 import { readdirSync as readDirSync } from "fs"
 
+interface Command {
+  data: SlashCommandBuilder
+  execute: (interaction: CommandInteraction) => Promise<void>
+}
+
 interface ExportedCommand {
-  default: {
-    data: SlashCommandBuilder
-    execute: (interaction: CommandInteraction) => Promise<void>
-  }
+  default: Command
 }
 
 /**
@@ -18,4 +20,16 @@ export async function loadCommands(): Promise<Collection<string, ExportedCommand
     commands.set(command.default.data.name, command.default)
   }
   return commands
+}
+
+/**
+ * Uploads the commands to the Discord API.
+ */
+export async function uploadCommands(token: string, clientId: string) {
+  const rest = new REST().setToken(token)
+  const commands = await loadCommands()
+  await rest.put(
+    Routes.applicationCommands(clientId),
+    { body: commands.map((command) => command.data.toJSON()) }
+  )
 }

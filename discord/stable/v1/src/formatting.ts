@@ -38,10 +38,11 @@ export function formatTimeLong(time: Date): string {
  * Formats the date using a short format. (01-01-2023 12:00:00)
  */
 export function formatTimeShort(time: Date): string {
+  console.error(time.toLocaleString())
   let day = time.getDate().toString().padStart(2, "0")
   let month = (time.getMonth() + 1).toString().padStart(2, "0")
   let year = time.getFullYear()
-  let hour = (time.getHours() % 12 || 12).toString().padStart(2, "0")
+  let hour = (time.getHours() > 12 ? time.getHours() - 12 : time.getHours()).toString().padStart(2, "0")
   let minute = time.getMinutes().toString().padStart(2, "0")
   let second = time.getSeconds().toString().padStart(2, "0")
   return `${day}-${month}-${year} ${hour}:${minute}:${second}`

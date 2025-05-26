@@ -1,8 +1,9 @@
 import { expect, test } from "bun:test"
-import { addOrdinal, formatTimeLong, formatTimeShort } from "./formatting.ts"
-import { loadCommands } from "./load_commands.ts"
-import { getCommandDescription, getReply } from "./strings.ts"
+import { addOrdinal, formatTimeLong, formatTimeShort } from "./formatting"
+import { loadCommands } from "./load_commands"
+import { getCommandDescription, getReply } from "./strings"
 import { Locale } from "discord.js"
+import { debug, debugError } from "./debugging"
 
 test("time formatting", () => {
   expect(formatTimeLong(new Date("2023-01-01T12:00:00Z"))).toBe("Sunday, January 1st, 2023. 12:00 PM")
@@ -29,4 +30,9 @@ test("add ordinals", () => {
 
 test("reply loading and formatting", () => {
   expect(getReply("ping_took", Locale.SpanishES, [100])).toBe("Pong! Tomó 100 ms.")
+})
+
+test("debugging", () => {
+  debug("This is a debug message")
+  debugError("This is an error message")
 })
