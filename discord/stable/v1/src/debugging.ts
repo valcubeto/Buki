@@ -10,6 +10,6 @@ export function debug(message: string) {
 }
 
 export function debugError(message: string) {
-  stderr.write(`[${formatTimeShort(new Date()).replace(/\d+/g, ($0) => red($0))}]\n`)
+  stderr.write(`[${formatTimeShort(new Date(Date.now())).replace(/\d+/g, ($0) => red($0))}]\n`)
   stderr.write(`${red("Error")}: ${message}\n\n`)
 }

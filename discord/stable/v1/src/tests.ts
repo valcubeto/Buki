@@ -35,4 +35,6 @@ test("reply loading and formatting", () => {
 test("debugging", () => {
   debug("This is a debug message")
   debugError("This is an error message")
+  // BUG: `bun test` gets the wrong timezone.
+  // expect(new Date().getHours()).toBe(16)
 })

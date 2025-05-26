@@ -9,8 +9,8 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ]
 })
-
-
+debug("test")
+throw new Error("a")
 client.once(Events.ClientReady, (_client) => {
   debug(`Logged in as ${client.user!.username}. Bot ready.`)
   client.user?.setStatus(PresenceUpdateStatus.Idle)
