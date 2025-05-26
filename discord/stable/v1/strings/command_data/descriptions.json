@@ -1,0 +1,10 @@
+{
+  "ping": {
+    "en-US": "Replies with \"Pong!\"",
+    "es-ES": "Responde con \"Pong!\"",
+    "ja": "「/ping」に「Pong!」で返信します。"
+  },
+  "reload": {
+    "en-US": "Reloads the slash commands data in the current server."
+  }
+}

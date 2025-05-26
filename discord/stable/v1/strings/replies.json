@@ -1,0 +1,18 @@
+{
+  "ping_calculating": {
+    "en-US": "Pong! Calculating...",
+    "es-ES": "Pong! Calculando...",
+    "ja": "Pong! 計算中です。"
+  },
+  "ping_took": {
+    "en-US": "Pong! Took {} ms.",
+    "es-ES": "Pong! Tomó {} ms.",
+    "ja": "Pong! {} ミリ秒でした。"
+  },
+  "reload_done": {
+    "en-US": "Done.",
+    "es-ES": "Hecho.",
+    "es-419": "Listo.",
+    "ja": "完了しました。"
+  }
+}

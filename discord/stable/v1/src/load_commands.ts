@@ -8,6 +8,9 @@ interface ExportedCommand {
   }
 }
 
+/**
+ * Reads the commands folder and loads them.
+ */
 export async function loadCommands(): Promise<Collection<string, ExportedCommand["default"]>> {
   const commands = new Collection<string, ExportedCommand["default"]>()
   for (const file of readDirSync("./src/commands")) {

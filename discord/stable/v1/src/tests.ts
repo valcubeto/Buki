@@ -1,6 +1,8 @@
 import { expect, test } from "bun:test"
-import { formatTimeLong, formatTimeShort } from "./formatting.ts"
+import { addOrdinal, formatTimeLong, formatTimeShort } from "./formatting.ts"
 import { loadCommands } from "./load_commands.ts"
+import { getCommandDescription, getReply } from "./strings.ts"
+import { Locale } from "discord.js"
 
 test("time formatting", () => {
   expect(formatTimeLong(new Date("2023-01-01T12:00:00Z"))).toBe("Sunday, January 1st, 2023. 12:00 PM")
@@ -8,10 +10,23 @@ test("time formatting", () => {
   expect(formatTimeShort(new Date("2023-01-01T12:00:00Z"))).toBe("01-01-2023 12:00:00")
 })
 
-test("env variables", () => {
+test("load .env file", () => {
   expect(Bun.env.ENV_LOADS).toBe("OK")
 })
 
 test("command loading", async () => {
-  console.log(await loadCommands())
+  expect((await loadCommands()).get("ping")).toBeDefined()
+  expect(getCommandDescription("ping")[Locale.SpanishES]).toBe("Responde con \"Pong!\"")
+})
+
+// This won't fail but anyways.
+test("add ordinals", () => {
+  expect(addOrdinal(1)).toBe("1st")
+  expect(addOrdinal(2)).toBe("2nd")
+  expect(addOrdinal(3)).toBe("3rd")
+  expect(addOrdinal(4)).toBe("4th")
+})
+
+test("reply loading and formatting", () => {
+  expect(getReply("ping_took", Locale.SpanishES, [100])).toBe("Pong! Tomó 100 ms.")
 })
