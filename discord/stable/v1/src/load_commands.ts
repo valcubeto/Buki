@@ -6,17 +6,13 @@ interface Command {
   execute: (interaction: CommandInteraction) => Promise<void>
 }
 
-interface ExportedCommand {
-  default: Command
-}
-
 /**
  * Reads the commands folder and loads them.
  */
-export async function loadCommands(): Promise<Collection<string, ExportedCommand["default"]>> {
-  const commands = new Collection<string, ExportedCommand["default"]>()
+export async function loadCommands(): Promise<Collection<string, Command>> {
+  const commands = new Collection<string, Command>()
   for (const file of readDirSync("./src/commands")) {
-    const command: ExportedCommand = await import(`./commands/${file}`)
+    const command: { default: Command } = await import(`./commands/${file}`)
     commands.set(command.default.data.name, command.default)
   }
   return commands
