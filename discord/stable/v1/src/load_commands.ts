@@ -12,8 +12,8 @@ interface Command {
 export async function loadCommands(): Promise<Collection<string, Command>> {
   const commands = new Collection<string, Command>()
   for (const file of readDirSync("./src/commands")) {
-    const command: { default: Command } = await import(`./commands/${file}`)
-    commands.set(command.default.data.name, command.default)
+    const command: Command = await import(`./commands/${file}`)
+    commands.set(command.data.name, command)
   }
   return commands
 }
