@@ -1,6 +1,6 @@
 import { Client, Collection, Events, GatewayIntentBits, PresenceUpdateStatus, type Interaction } from "discord.js"
 import { debug, debugError } from "./debugging"
-import { loadCommands, uploadCommands } from "./load_commands"
+import { Commands } from "./commands"
 
 const client = new Client({
   intents: [
@@ -9,16 +9,15 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ]
 })
-debug("test")
-throw new Error("a")
+
 client.once(Events.ClientReady, (_client) => {
   debug(`Logged in as ${client.user!.username}. Bot ready.`)
   client.user?.setStatus(PresenceUpdateStatus.Idle)
 })
 
-export let globalCommands = await loadCommands()
+export const globalCommands: Commands = await new Commands().reload()
 if (process.argv.includes("--upload")) {
-  uploadCommands(Bun.env["BOT_TOKEN"]!, Bun.env["APP_ID"]!)
+  await globalCommands.uploadAll(Bun.env["BOT_TOKEN"]!, Bun.env["APP_ID"]!)
 }
 
 // user id => number representing the time in ms

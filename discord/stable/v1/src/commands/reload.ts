@@ -2,7 +2,6 @@ import { CommandInteraction, SlashCommandBuilder, MessageFlags, Locale } from "d
 import { getCommandDescription, getCommandName, getReply } from "../strings"
 import { debug } from "../debugging"
 import { globalCommands } from "../index"
-import { uploadCommands } from "../load_commands"
 
 const description = getCommandDescription("reload")
 export const data = new SlashCommandBuilder()
@@ -18,7 +17,8 @@ export async function execute(interaction: CommandInteraction) {
     return
   }
   debug("Reloading slash commands...")
-  await uploadCommands(interaction.client.token, interaction.client.user!.id)
+  globalCommands.reload()
+  await globalCommands.uploadAll(interaction.client.token, interaction.client.user!.id)
   interaction.reply({
     content: getReply("reload_done", interaction.locale),
     flags: MessageFlags.Ephemeral,

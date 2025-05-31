@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
 import { addOrdinal, formatTimeLong, formatTimeShort } from "./formatting"
-import { loadCommands } from "./load_commands"
+import { Commands } from "./commands"
 import { getCommandDescription, getReply } from "./strings"
 import { Locale } from "discord.js"
 import { debug, debugError } from "./debugging"
@@ -16,7 +16,7 @@ test("load .env file", () => {
 })
 
 test("command loading", async () => {
-  expect((await loadCommands()).get("ping")).toBeDefined()
+  expect((await new Commands().reload()).get("ping")).toBeDefined()
   expect(getCommandDescription("ping")[Locale.SpanishES]).toBe("Responde con \"Pong!\"")
 })
 

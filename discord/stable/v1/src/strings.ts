@@ -35,7 +35,7 @@ export function getCommandDescription(command: string): LocalizationMap {
 */
 export function getCommandName(command: string): LocalizationMap {
   const name = { [Locale.EnglishUS]: command, ...(names[command] ?? {}) }
-  const en_us: string = name[Locale.EnglishUS]!
+  const en_us = name[Locale.EnglishUS]!
   const en_gb = name[Locale.EnglishGB] ?? en_us
   const es_es = name[Locale.SpanishES] ?? en_us
   const es_latam = name[Locale.SpanishLATAM] ?? es_es ?? en_us
